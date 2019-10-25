@@ -113,7 +113,9 @@ public class AllSongsFragment extends Fragment implements SongAdapter.OnClickIte
             }
         });
         if(myService!=null){
-
+            if(ispotraist==true){
+                mConstraitLayout.setVisibility(android.view.View.VISIBLE);
+            }
             updateUI();
             songAdapter.setMyService(myService);
         }
