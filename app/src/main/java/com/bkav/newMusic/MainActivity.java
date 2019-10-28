@@ -120,16 +120,11 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         Intent intent=new Intent(this, MediaPlaybackService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         if(ispotraist==false) {
-            if(findViewById(R.id.fragment2)!=null) {
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
-            }
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
+        }
             else
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
-
-        }else{
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
-        }
 
     }
 

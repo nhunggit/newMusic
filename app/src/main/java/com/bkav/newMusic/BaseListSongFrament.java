@@ -104,6 +104,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                     }
                 }
                 updateUI();
+                myService.setmMinIndex(mSharePreferences.getInt("position",0));
 
             }
         });
@@ -165,6 +166,8 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
     @Override
     public void ClickItem(int position) {
+        myService.setListSong(songs);
+        myService.setmMinIndex(position);
         Log.d("ntkc", "ClickItem: "+myService);
         if(ispotraist==true) {
             mConstraitLayout.setVisibility(View.VISIBLE);

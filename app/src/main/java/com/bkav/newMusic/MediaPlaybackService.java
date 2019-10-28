@@ -288,6 +288,7 @@ public class MediaPlaybackService extends Service {
             mFile =song.getFile();
             mMinIndex =song.getId()-1;
         }
+        Log.d("okok", "playSong: "+mMinIndex);
         showNotification(mNameSong, mArtistt, mPotoMusic);
         mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharePreferences.edit();
@@ -299,7 +300,7 @@ public class MediaPlaybackService extends Service {
     }
 
     public void nextSong() throws IOException {
-        mediaPlayer.stop();
+        mediaPlayer.pause();
         if(mShuffleSong ==true){
             mMinIndex =actionShuffleSong();
         }

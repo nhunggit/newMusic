@@ -171,7 +171,8 @@
                     android:padding="2dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@+id/next"
-                    app:layout_constraintStart_toEndOf="@+id/previous" />
+                    app:layout_constraintStart_toEndOf="@+id/previous"
+                    />
 
                 <ImageView
                     android:id="@+id/previous"
