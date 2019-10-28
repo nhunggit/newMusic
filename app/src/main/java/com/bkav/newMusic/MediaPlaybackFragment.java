@@ -1,5 +1,6 @@
 package com.bkav.newMusic;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -41,7 +42,8 @@ public class MediaPlaybackFragment extends Fragment {
     ImageView previous;
     ImageView repeat;
     ImageView shuffle;
-    SharedPreferences sharedPreferences;
+    private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
+    SharedPreferences shareferences;
     SharedPreferences.Editor editor;
     String namesong="";
     ArrayList<Song> song=new ArrayList<>();
@@ -66,7 +68,21 @@ public class MediaPlaybackFragment extends Fragment {
         repeat = (ImageView) view.findViewById(R.id.repeat);
         shuffle = (ImageView) view.findViewById(R.id.shuffle);
         previous = (ImageView) view.findViewById(R.id.previous);
+        shareferences=this.getActivity().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        nameSong.setText(shareferences.getString("namesong","NameSong"));
+        nameArtist.setText(shareferences.getString("artist","NameArtist"));
+        Bitmap bitmap=getAlbumn(shareferences.getString("file",""));
+        potoMusic.setImageBitmap(bitmap);
+        potoMusic2.setImageBitmap(bitmap);
+        if(shareferences.getBoolean("isPlaying",false)==false){
+            play.setImageResource(R.drawable.ic_play_circle_filled_black_50dp);
+        }
 
+        boolean ispotraist=getResources().getBoolean(R.bool.ispotraist);
+        if(ispotraist==false){
+            if(myService!=null)
+                updateUI();
+        }
         if (myService != null) {
             seekBar.setMax(myService.getDurationSong());
             if(myService.isPlaying()) {

@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -29,14 +30,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MediaPlaybackService extends Service implements  MediaPlayer.OnCompletionListener{
+public class MediaPlaybackService extends Service {
     private static final String NOTIFICATION_CHANNEL_ID="1";
     public static final String ACTION_PERVIOUS = "xxx.yyy.zzz.ACTION_PERVIOUS";
     public static final String ACTION_PLAY = "xxx.yyy.zzz.ACTION_PLAY";
     public static final String ACTION_NEXT = "xxx.yyy.zzz.ACTION_NEXT";
     private final IBinder mBinder = new LocalBinder();
     private final Random mRandom = new Random();
-    private MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer=null;
     private String mNameSong ="";
     private String mArtistt ="";
     private String  mPotoMusic ="";
@@ -106,17 +107,6 @@ public class MediaPlaybackService extends Service implements  MediaPlayer.OnComp
     public ArrayList<Song> getListsong() {
         return listsong;
     }
-
-    @Override
-    public void onCompletion(MediaPlayer mp) {
-        try {
-            onCompletionSong();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public class LocalBinder extends Binder {
         MediaPlaybackService getService() {
             return MediaPlaybackService.this;
@@ -183,12 +173,21 @@ public class MediaPlaybackService extends Service implements  MediaPlayer.OnComp
     public boolean isPlaying(){
         if(mediaPlayer.isPlaying())
             return true;
-        return false;
+        else
+            return false;
     }
 
     public void pauseSong(){
-        mediaPlayer.stop();
+        mediaPlayer.pause();
         showNotification(mNameSong, mArtistt, mPotoMusic);
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+            stopForeground(STOP_FOREGROUND_DETACH);
+        }
+        SharedPreferences.Editor editor=mSharePreferences.edit();
+        editor.putBoolean("isPlaying",false);
+        editor.commit();
+
+
     }
     public int getDurationSong(){
         return mediaPlayer.getDuration();
@@ -273,7 +272,7 @@ public class MediaPlaybackService extends Service implements  MediaPlayer.OnComp
 
     public void playSong(Song song) throws IOException {
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setOnCompletionListener(this);
+        updateTime();
         if (isPlaying()) {
             mediaPlayer.pause();
         } else {
@@ -292,7 +291,7 @@ public class MediaPlaybackService extends Service implements  MediaPlayer.OnComp
         showNotification(mNameSong, mArtistt, mPotoMusic);
         mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharePreferences.edit();
-        editor.putString("name",getNameSong());
+        editor.putString("namesong",getNameSong());
         editor.putString("artist",getNameArtist());
         editor.putString("file",getFile());
         editor.putInt("position",getMinIndex());
@@ -328,26 +327,26 @@ public class MediaPlaybackService extends Service implements  MediaPlayer.OnComp
 
     }
 
-//    public void updateTime(){
-//        final Handler handler=new Handler();
-//        handler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//                getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//                    @Override
-//                    public void onCompletion(MediaPlayer mp) {
-//                        try {
-//                            onCompletionSong();
-//
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                });
-//                handler.postDelayed(this,500);
-//            }
-//        },100);
-//    }
+    public void updateTime(){
+        final Handler handler=new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    @Override
+                    public void onCompletion(MediaPlayer mp) {
+                        try {
+                            onCompletionSong();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+                handler.postDelayed(this,500);
+            }
+        },100);
+    }
     public void onCompletionSong() throws IOException {
         mediaPlayer.pause();
         if(mLoopSong ==0){
@@ -373,6 +372,12 @@ public class MediaPlaybackService extends Service implements  MediaPlayer.OnComp
     @Override
     public IBinder onBind(Intent intent) {
         return mBinder;
+    }
+
+    @Override
+    public boolean onUnbind(Intent intent) {
+        mediaPlayer.pause();
+        return super.onUnbind(intent);
     }
     //phương thức cho client
 

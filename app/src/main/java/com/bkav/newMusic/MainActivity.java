@@ -1,5 +1,6 @@
 package com.bkav.newMusic;
 
+import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -34,20 +35,21 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     boolean mBound=false;
     Fragment mAllSongFragment;
     Fragment mMediaPlayBackFragment;
-    SongAdapter songAdapter;
     private DrawerLayout mDrawerLayout;
-   // private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
+    private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
+
+    public void setiConnectActivityAndBaseSong(IConnectActivityAndBaseSong iConnectActivityAndBaseSong) {
+        this.iConnectActivityAndBaseSong = iConnectActivityAndBaseSong;
+    }
+
     private ServiceConnection mConnection=new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MediaPlaybackService.LocalBinder binder=(MediaPlaybackService.LocalBinder) service;
             myService=binder.getService();
             Log.d("BKAV DucLQ", " Bkav DucLQ bind service myService "+ myService);
-            ((AllSongsFragment) mAllSongFragment).setMyService(myService);
+            iConnectActivityAndBaseSong.connectActivityAndBaseSong();
             ((MediaPlaybackFragment)mMediaPlayBackFragment).setMyService(myService);
-            songAdapter.setMyService(myService);
-            //iConnectActivityAndBaseSong.connectActivityAndBaseSong();
-          //  ((SongAdapter)songAdapter).setMyService(myService);
             mBound=true;
         }
         @Override
@@ -55,6 +57,44 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             mBound=false;
         }
     };
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        if (isMyServiceRunning(MediaPlaybackService.class)) {
+//            connectService();
+//        } else {
+//            startService();
+//            connectService();
+//        }
+//    }
+//
+//    public void connectService() {
+//        Intent it = new Intent(MainActivity.this, MediaPlaybackService.class);
+//        bindService(it, mConnection, 0);
+//    }
+//
+//    public void startService() {
+//        Intent it = new Intent(MainActivity.this, MediaPlaybackService.class);
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+//            startService(it);
+//        }
+//    }
+//
+//    private boolean isMyServiceRunning(Class<?> serviceClass) {
+//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+//            if (serviceClass.getName().equals(service.service.getClassName())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+//
+//    @Override
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        unbindService(mConnection);
+//    }
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
@@ -77,7 +117,6 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
        //boolean n=getResources().getBoolean(R.bool.nhung);
         mAllSongFragment = new AllSongsFragment();
         mMediaPlayBackFragment = new MediaPlaybackFragment();
-        songAdapter=new SongAdapter();
         Intent intent=new Intent(this, MediaPlaybackService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         if(ispotraist==false) {
@@ -120,11 +159,9 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         return true;
     }
 
-//    public void setiConnectActivityAndBaseSong(IConnectActivityAndBaseSong iConnectActivityAndBaseSong) {
-//        this.iConnectActivityAndBaseSong = iConnectActivityAndBaseSong;
-//    }
-//    interface IConnectActivityAndBaseSong {
-//        void connectActivityAndBaseSong();
-//    }
+    interface IConnectActivityAndBaseSong {
+        void connectActivityAndBaseSong();
+    }
+
 
 }
