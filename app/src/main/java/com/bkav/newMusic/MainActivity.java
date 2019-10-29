@@ -1,10 +1,12 @@
 package com.bkav.newMusic;
 
+import android.Manifest;
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -35,6 +37,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     boolean mBound=false;
     Fragment mAllSongFragment;
     Fragment mMediaPlayBackFragment;
+    private  boolean mStatus=false;
+    Fragment mFavoriteSongsFragment;
     private DrawerLayout mDrawerLayout;
     private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
 
@@ -95,13 +99,55 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
 //        super.onDestroy();
 //        unbindService(mConnection);
 //    }
+@Override
+public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    if (requestCode == 1) {
+        if (grantResults.length == 1 &&
+                grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(MainActivity.this, "Permision Write File is Granted", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(MainActivity.this, "Permision Write File is Denied", Toast.LENGTH_SHORT).show();
+        }
+    } else {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+}
 
+    public void initPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                //Permisson don't granted
+                if (shouldShowRequestPermissionRationale(
+                        Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    Toast.makeText(MainActivity.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
+                }
+                // Permisson don't granted and dont show dialog again.
+                else {
+                    Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
+                }
+                //Register permission
+                requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+
+            }
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        initPermission();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -122,10 +168,12 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         if(ispotraist==false) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
+        } else {
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
         }
-            else
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
-
+//        if (mStatus == true) {
+//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
+//        }
     }
 
     @Override
@@ -140,17 +188,21 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         int id = menuItem.getItemId();
-//
-//        if (id == R.id.nav_favorite) {
-//            Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
-//            mFavoriteSongsFragment = new FavoriteSongsFragment((ArrayList<Song>) mMusicService.getmListAllSong());
-//            getSupportFragmentManager().beginTransaction().replace(R.id.framentContent, mFavoriteSongsFragment).commit();
-//
-//        } else if (id == R.id.nav_playlist) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.framentContent, mAllSongsFragment).commit();
-//        }
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        if (id == R.id.nav_favorite) {
+            Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
+            mStatus=true;
+             mFavoriteSongsFragment = new FavoriteSongFament((ArrayList<Song>) myService.getListsong());
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
+            mDrawerLayout= findViewById(R.id.drawer_layout);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+
+        } else if (id == R.id.nav_playlist) {
+            mStatus=false;
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
+            mDrawerLayout= findViewById(R.id.drawer_layout);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+        }
+
         return true;
     }
 

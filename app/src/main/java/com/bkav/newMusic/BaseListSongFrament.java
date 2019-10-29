@@ -66,6 +66,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         position=mSharePreferences.getInt("position",0);
         NameSongPlaying.setText(mSharePreferences.getString("namesong","NameSong"));
         artist.setText(mSharePreferences.getString("artist","NameArtist"));
+        recycleview.setAdapter(songAdapter);
 
         // Log.d("nameSong", "onCreateView: "+nameSong.getText());
         @SuppressLint("WrongConstant") LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);

@@ -83,23 +83,21 @@ public class AllSongsFragment extends BaseListSongFrament implements LoaderManag
                 artist = song.getArtist();
                 duration = song.getDuration();
                 songs.add(new Song(id, title, file, artist, duration));
-//                if (isCreate == false) {
-//                    ContentValues values = new ContentValues();
-//                    values.put(FavoriteSongsProvider.ID_PROVIDER, id);
-//                    values.put(FavoriteSongsProvider.FAVORITE, 0);
-//                    values.put(FavoriteSongsProvider.COUNT, 0);
-//                    Uri uri = getActivity().getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
-//                    mSharePreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
-//                    SharedPreferences.Editor editor = mSharePreferences.edit();
-//                    editor.putBoolean("create_db", true);
-//                    editor.commit();
-//                }
+                if (isCreate == false) {
+                    ContentValues values = new ContentValues();
+                    values.put(FavoriteSongsProvider.ID_PROVIDER, id);
+                    values.put(FavoriteSongsProvider.FAVORITE, 0);
+                    values.put(FavoriteSongsProvider.COUNT, 0);
+                    Uri uri = getActivity().getContentResolver().insert(FavoriteSongsProvider.CONTENT_URI, values);
+                    mSharePreferences = getActivity().getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = mSharePreferences.edit();
+                    editor.putBoolean("create_db", true);
+                    editor.commit();
+                }
 
 
             }
         }
-
-        recycleview.setAdapter(songAdapter);
         songAdapter.setOnClickItemView( this);
         songAdapter.updateList(songs);
         setSong(songs);

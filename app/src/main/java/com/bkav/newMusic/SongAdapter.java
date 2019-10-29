@@ -110,20 +110,15 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
                                 ContentValues values = new ContentValues();
                                 values.put(FavoriteSongsProvider.FAVORITE, 2);
                                 getMcontext().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, FavoriteSongsProvider.ID_PROVIDER + "= " + mSong.get(position).getId(), null);
-                                Toast.makeText(mcontext, "addFavorite song //" + myService.getNameSong(), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(mcontext, "addFavorite song //" + mSong.get(position).getTitle(), Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.removeFavorite:
                                 ContentValues values1 = new ContentValues();
                                 values1.put(FavoriteSongsProvider.FAVORITE, 1);
                                 values1.put(FavoriteSongsProvider.COUNT, 0);
-                                for (int i = 0; i < listSongFavorite.size(); i++) {
-                                    //     Log.d("name", mListFavoriteSongs.get(i).getTitle());
-                                    if (listSongFavorite.get(i).getTitle().equals(mSong.get(position).getTitle())) {
-                                        mcontext.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values1, FavoriteSongsProvider.ID_PROVIDER + "= " +listSongFavorite.get(i).getId(), null);
-                                        Log.d("name", listSongFavorite.get(i).getTitle()+"//"+FavoriteSongsProvider.ID_PROVIDER+"///"+listSongFavorite.get(i).getId());
-                                    }
-                                }
-                                Toast.makeText(mcontext, "removeFavorite song //" + myService.getNameSong(), Toast.LENGTH_SHORT).show();// lôi
+                                mcontext.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values1, FavoriteSongsProvider.ID_PROVIDER + "= " + mSong.get(position).getId(), null);
+
+                                Toast.makeText(mcontext, "removeFavorite song //" +mSong.get(position).getTitle(), Toast.LENGTH_SHORT).show();// lôi
                                 return true;
                         }
                         return false;

@@ -29,6 +29,7 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID,null,this);
+
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -63,8 +64,10 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
                             dem++;
                             mListFavoriteSongs.add(song);
                         }
-                        songAdapter.setListSongFavorite(mListAllSong);
-                        songAdapter.setmTypeSong("FavoriteSong");
+                        songAdapter.setOnClickItemView( this);
+                        songAdapter.updateList(mListFavoriteSongs);
+                        setSong(mListFavoriteSongs);
+                        songAdapter.setmTypeSong("allSong");
                     }
                 }
             } while (data.moveToNext());
