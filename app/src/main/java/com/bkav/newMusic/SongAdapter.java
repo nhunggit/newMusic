@@ -28,7 +28,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
     private ArrayList<Song> listSongFavorite=new ArrayList<>();
     private String mTypeSong="";
     int k=0;
-    TextView nameSong;
+    TextView mnameSong;
 
     public void setListSongFavorite(ArrayList<Song> listSongFavorite) {
         this.listSongFavorite = listSongFavorite;
@@ -83,7 +83,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
         });
 
         if(myService!=null){
-            Log.d("adapter", "onBindViewHolder: "+"ok");
+            //Log.d("adapter", "onBindViewHolder: "+"ok");
             if((myService.getNameSong()).equals(mSong.get(position).getTitle())==true){
                 Log.d("compare", "onBindViewHolder: "+myService.getNameSong()+mSong.get(position).getTitle());
                 holder.mnameSong.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
@@ -91,6 +91,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
                 holder.mstt.setBackgroundResource(R.drawable.ic_equalizer_black_24dp);
             }
             else{
+                holder.mstt.setBackgroundResource(R.drawable.ic_equalizer_while_24dp);
                 holder.mstt.setText(mSong.get(position).getId() + "");
                 holder.mnameSong.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
             }
@@ -143,7 +144,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
     }
 
 
-    public class WordViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class WordViewHolder extends RecyclerView.ViewHolder  {
         TextView mstt;
         TextView mnameSong;
         TextView mHours;
@@ -162,22 +163,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
             constraintLayout = (ConstraintLayout) itemView.findViewById(R.id.constraintLayoutItem);
         }
 
-        @Override
-        public void onClick(View v) {
-            if(myService!=null){
-                Log.d("adapter", "onBindViewHolder: "+"ok");
-//                if((myService.getNameSong()).equals(mSong.get(position).getTitle())==true){
-//                    Log.d("compare", "onBindViewHolder: "+myService.getNameSong()+mSong.get(position).getTitle());
-//                    mnameSong.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
-//                    mstt.setText("");
-//                    mstt.setBackgroundResource(R.drawable.ic_equalizer_black_24dp);
-//                }
-//                else{
-//                    mstt.setText(mSong.get(position).getId() + "");
-//                    mnameSong.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
-//                }
-            }
-        }
+
     }
 
 

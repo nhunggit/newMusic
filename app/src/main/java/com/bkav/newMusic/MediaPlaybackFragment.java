@@ -1,5 +1,6 @@
 package com.bkav.newMusic;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +44,7 @@ public class MediaPlaybackFragment extends Fragment {
     ImageView previous;
     ImageView repeat;
     ImageView shuffle;
+    ImageView listmusic;
     private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     SharedPreferences shareferences;
     SharedPreferences.Editor editor;
@@ -52,8 +55,9 @@ public class MediaPlaybackFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.baihat, container, false);
+        listmusic=(ImageView) view.findViewById(R.id.listMusic);
         seekBar = (SeekBar) view.findViewById(R.id.seekbar);
         potoMusic2 = (ImageView) view.findViewById(R.id.imgBackGround);
         nameSong = (TextView) view.findViewById(R.id.namesong);
@@ -74,8 +78,18 @@ public class MediaPlaybackFragment extends Fragment {
         Bitmap bitmap=getAlbumn(shareferences.getString("file",""));
         potoMusic.setImageBitmap(bitmap);
         potoMusic2.setImageBitmap(bitmap);
+
+        listmusic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getFragmentManager().popBackStack();
+            }
+        });
+
         if(shareferences.getBoolean("isPlaying",false)==false){
             play.setImageResource(R.drawable.ic_play_circle_filled_black_50dp);
+        }else{
+            play.setImageResource(R.drawable.ic_pause_circle_filled_black_50dp);
         }
 
         boolean ispotraist=getResources().getBoolean(R.bool.ispotraist);
@@ -179,6 +193,24 @@ public class MediaPlaybackFragment extends Fragment {
                 updateUI();
             }
         });
+        like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContentValues values = new ContentValues();
+                values.put(FavoriteSongsProvider.FAVORITE,2);
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI,values,FavoriteSongsProvider.ID_PROVIDER +"= "+myService.getMinIndex(),null);
+                Toast.makeText(getContext(),  "like song //"+myService.getNameSong(), Toast.LENGTH_SHORT).show();
+            }
+        });
+        diskLike.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ContentValues values = new ContentValues();
+                values.put(FavoriteSongsProvider.FAVORITE,1);
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI,values,FavoriteSongsProvider.ID_PROVIDER +"= "+myService.getMinIndex(),null);
+                Toast.makeText(getContext(),  "dislike song //"+myService.getNameSong(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return view;
     }
@@ -194,6 +226,7 @@ public class MediaPlaybackFragment extends Fragment {
         if (myService != null && seekBar != null) {
             if (myService.isMusicPlay()) {
                 updateTime();
+                seekBar.setMax(myService.getDurationSong());
                 nameSong.setText(myService.getNameSong());
                 nameArtist.setText(myService.getNameArtist());
                 Bitmap bitmap = getAlbumn(myService.getPotoMusic());
@@ -206,9 +239,23 @@ public class MediaPlaybackFragment extends Fragment {
                 } else {
                     play.setImageResource(R.drawable.ic_play_circle_filled_black_50dp);
                 }
+                if (myService.isShuffleSong()) {
+                    shuffle.setBackgroundResource(R.drawable.ic_shuffle_yellow_24dp);
+                } else
+                   shuffle.setBackgroundResource(R.drawable.ic_shuffle_black_50dp);
+
+                if (myService.getLoopSong() == 0) {
+                    repeat.setBackgroundResource(R.drawable.ic_repeat_white_24dp);
+                } else {
+                    if (myService.getLoopSong() == -1) {
+                        repeat.setBackgroundResource(R.drawable.ic_repeat_yellow_24dp);
+                    } else
+                        repeat.setBackgroundResource(R.drawable.ic_repeat_one_yellow_24dp);
+                }
             }
         }
     }
+
 
     public void updateTime() {
         final Handler handler = new Handler();
@@ -245,5 +292,7 @@ public class MediaPlaybackFragment extends Fragment {
         outState.putString("namesong",name);
 
     }
+
+
 }
 

@@ -165,6 +165,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         mMediaPlayBackFragment = new MediaPlaybackFragment();
         Intent intent=new Intent(this, MediaPlaybackService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        Log.d("okko", "onCreate: ogd"+ispotraist);
         if(ispotraist==false) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();

@@ -56,7 +56,7 @@ public class MediaPlaybackService extends Service {
         mNameSong=mSharePreferences.getString("namesong","NameSong");
         mArtistt=mSharePreferences.getString("artist","NameArtist");
         mFile=mSharePreferences.getString("file","");
-        mPosition=mSharePreferences.getInt("position",0);
+        mMinIndex=mSharePreferences.getInt("position",0);
     }
 
     public int getLoopSong() {
@@ -262,13 +262,14 @@ public class MediaPlaybackService extends Service {
             NotificationChannel notificationChannel=new NotificationChannel(
                     NOTIFICATION_CHANNEL_ID,
                     "mUSIC SERVICE CHANNEL",
-                    NotificationManager.IMPORTANCE_HIGH
+                    NotificationManager.IMPORTANCE_MIN
             );
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             NotificationManager manager=getSystemService(NotificationManager.class);
            manager.createNotificationChannel(notificationChannel);
         }
     }
+
 
     public void playSong(Song song) throws IOException {
         mediaPlayer = new MediaPlayer();
@@ -296,6 +297,9 @@ public class MediaPlaybackService extends Service {
         editor.putString("artist",getNameArtist());
         editor.putString("file",getFile());
         editor.putInt("position",getMinIndex());
+        editor.putInt("timeFinish",mediaPlayer.getDuration());
+        editor.putInt("timeCurrent",mediaPlayer.getCurrentPosition());
+        editor.putBoolean("isPlaying",true);
         editor.commit();
     }
 

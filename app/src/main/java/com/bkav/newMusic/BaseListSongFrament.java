@@ -3,7 +3,12 @@ package com.bkav.newMusic;
 import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Typeface;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +71,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         position=mSharePreferences.getInt("position",0);
         NameSongPlaying.setText(mSharePreferences.getString("namesong","NameSong"));
         artist.setText(mSharePreferences.getString("artist","NameArtist"));
+        final String file=mSharePreferences.getString("file","");
         recycleview.setAdapter(songAdapter);
 
         // Log.d("nameSong", "onCreateView: "+nameSong.getText());
@@ -113,7 +119,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
             mConstraitLayout.setVisibility(android.view.View.GONE);
         }
         if(myService!=null){
-            Log.d("isplay", "onCreateView: "+"ok");
             updateUI();
         }
         ((MainActivity)getActivity()).setiConnectActivityAndBaseSong(new MainActivity.IConnectActivityAndBaseSong() {
@@ -126,9 +131,9 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
             }
         });
-
         return view;
     }
+
     public void setSong(ArrayList<Song> songs){
         this.songs=songs;
         songAdapter.setmSong(songs);
@@ -161,6 +166,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 buttonPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
 
             // if((myService.getNameSong()).equals(songs))
+            songAdapter.notifyDataSetChanged();
 
         }
     }
@@ -169,7 +175,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
     public void ClickItem(int position) {
         myService.setListSong(songs);
         myService.setmMinIndex(position);
-        Log.d("ntkc", "ClickItem: "+myService);
         if(ispotraist==true) {
             mConstraitLayout.setVisibility(View.VISIBLE);
         }else{
@@ -189,8 +194,15 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
             else {
                 myService.playSong(songs.get(position));
             }
-            updateUI();
+//            if(myService!=null){
+//                Log.d("adapter", "onBindViewHolder: "+"ok");
+////                if((myService.getNameSong()).equals(songs.get(position).getTitle())==true){
+////                    Log.d("compare", "onBindViewHolder: "+myService.getNameSong()+songs.get(position).getTitle());
+////                   namesong.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
+//                }
 
+
+            updateUI();
         } catch (IOException e) {
             e.printStackTrace();
         }
