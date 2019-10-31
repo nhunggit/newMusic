@@ -1,6 +1,7 @@
 package com.bkav.newMusic;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Typeface;
@@ -37,13 +38,15 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
     TextView NameSongPlaying;
     TextView nameSong;
     TextView artist;
-    ImageButton buttonPlay;
+    ImageView buttonPlay;
     ImageView disk;
     SongAdapter songAdapter;
     RecyclerView recycleview;
     private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     private SharedPreferences mSharePreferences;
     private int position=0;
+    private String mURL = "content://com.bkav.provider";
+    private Uri mURISong = Uri.parse(mURL);
     private MediaPlaybackFragment songFragment=new MediaPlaybackFragment();
     ArrayList<Song> songs = new ArrayList<>();
     public ArrayList<Song> getListsong() {
@@ -120,6 +123,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         }
         if(myService!=null){
             updateUI();
+            mConstraitLayout.setVisibility(View.VISIBLE);
         }
         ((MainActivity)getActivity()).setiConnectActivityAndBaseSong(new MainActivity.IConnectActivityAndBaseSong() {
             @Override
@@ -139,11 +143,8 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         songAdapter.setmSong(songs);
     }
 
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        baihatAdapter.setMyService(myService);
-//    }
+
+
     //    @Override
 //    public void onCreate(@Nullable Bundle savedInstanceState) {
 //        super.onCreate(savedInstanceState);
@@ -156,7 +157,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         if(myService.isMusicPlay()){
             Log.d("abc1", "ClickItem: "+myService.getNameSong());
             //constraintLayout.setVisibility(View.VISIBLE);
-            myService.updateTime();
+            //myService.updateTime();
             disk.setImageBitmap(myService.getAlbumn(myService.getFile()));
             NameSongPlaying.setText(myService.getNameSong());
             artist.setText(myService.getNameArtist());
@@ -184,22 +185,38 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
         try {
             if (myService.isMusicPlay()) {
-                if (!myService.isPlaying()) {
-                    myService.playSong(songs.get(position));
-                } else {
+                if (myService.isPlaying()) {
                     myService.pauseSong();
-                    myService.playSong(songs.get(position));
                 }
+                    myService.playSong(songs.get(position));
             }
             else {
                 myService.playSong(songs.get(position));
             }
-//            if(myService!=null){
-//                Log.d("adapter", "onBindViewHolder: "+"ok");
-////                if((myService.getNameSong()).equals(songs.get(position).getTitle())==true){
-////                    Log.d("compare", "onBindViewHolder: "+myService.getNameSong()+songs.get(position).getTitle());
-////                   namesong.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
-//                }
+            String selection = " id_provider =" + songs.get(position).getId();
+            Cursor c = getActivity().managedQuery(mURISong, null, selection, null, null);
+            if (c.moveToFirst()) {
+                do {
+                    //Log.d("ID",c.getString(c.getColumnIndex("id_provider")));
+                    if (c.getInt(c.getColumnIndex(FavoriteSongsProvider.FAVORITE)) != 1)
+                        if (c.getInt(c.getColumnIndex(FavoriteSongsProvider.COUNT)) < 2) {
+                            ContentValues values = new ContentValues();
+                            values.put(FavoriteSongsProvider.COUNT, c.getInt(c.getColumnIndex(FavoriteSongsProvider.COUNT)) + 1);
+                            getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, FavoriteSongsProvider.ID_PROVIDER + "= " + songs.get(position).getId(), null);
+                            //   Log.d("ID",c.getString(c.getColumnIndex(FavoriteSongsProvider.COUNT))+"//"+c.getString(c.getColumnIndex(FavoriteSongsProvider.FAVORITE)));
+                        } else {
+                            if (c.getInt(c.getColumnIndex(FavoriteSongsProvider.COUNT)) == 2) {
+                                ContentValues values = new ContentValues();
+                                values.put(FavoriteSongsProvider.COUNT, 0);
+                                values.put(FavoriteSongsProvider.FAVORITE, 2);
+                                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, FavoriteSongsProvider.ID_PROVIDER + "= " +songs.get(position).getId(), null);
+                                //   Log.d("ID1", c.getString(c.getColumnIndex(FavoriteSongsProvider.COUNT)) + "//" + c.getString(c.getColumnIndex(FavoriteSongsProvider.FAVORITE)));
+                            }
+                        }
+
+                } while (c.moveToNext());
+
+            }
 
 
             updateUI();
@@ -208,4 +225,13 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         }
 
     }
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(myService!=null) {
+            updateUI();
+        }
+        songAdapter.setMyService(myService);
+    }
+
 }

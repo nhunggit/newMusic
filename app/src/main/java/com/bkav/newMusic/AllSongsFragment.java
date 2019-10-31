@@ -94,20 +94,19 @@ public class AllSongsFragment extends BaseListSongFrament implements LoaderManag
                     editor.putBoolean("create_db", true);
                     editor.commit();
                 }
-
-
             }
         }
         songAdapter.setOnClickItemView( this);
         songAdapter.updateList(songs);
         setSong(songs);
-        songAdapter.setmTypeSong("allSong");
+        songAdapter.setmTypeSong("AllSong");
     }
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
+
 }
 
 

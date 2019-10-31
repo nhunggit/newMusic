@@ -64,10 +64,11 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
                             dem++;
                             mListFavoriteSongs.add(song);
                         }
+                        Log.d("favorite", "onLoadFinished: "+mListFavoriteSongs.get(0).getFile());
                         songAdapter.setOnClickItemView( this);
                         songAdapter.updateList(mListFavoriteSongs);
                         setSong(mListFavoriteSongs);
-                        songAdapter.setmTypeSong("allSong");
+                        songAdapter.setmTypeSong("FavoriteSong");
                     }
                 }
             } while (data.moveToNext());

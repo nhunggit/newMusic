@@ -183,11 +183,15 @@ public class MediaPlaybackFragment extends Fragment {
                 if (myService.isPlaying()) {
                     myService.pauseSong();
                 } else {
-                    try {
+                    if(seekBar!=null){
+                        myService.getMediaPlayer().start();
+                    }else {
+                        try {
 //                        Log.d("ok", "onClick: "+myService.getListsong().size()+"///"+position);
-                        myService.playSong(myService.getListsong().get(myService.getMinIndex()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                            myService.playSong(myService.getListsong().get(myService.getMinIndex()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
                 updateUI();

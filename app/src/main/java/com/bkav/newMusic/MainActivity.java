@@ -31,11 +31,11 @@ import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener{
+public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, ICallbackFromService{
 
     MediaPlaybackService myService;
     boolean mBound=false;
-    Fragment mAllSongFragment;
+    AllSongsFragment mAllSongFragment;
     Fragment mMediaPlayBackFragment;
     private  boolean mStatus=false;
     Fragment mFavoriteSongsFragment;
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         public void onServiceConnected(ComponentName name, IBinder service) {
             MediaPlaybackService.LocalBinder binder=(MediaPlaybackService.LocalBinder) service;
             myService=binder.getService();
+            myService.setICallbackFromService(getICallback());
             Log.d("BKAV DucLQ", " Bkav DucLQ bind service myService "+ myService);
             iConnectActivityAndBaseSong.connectActivityAndBaseSong();
             ((MediaPlaybackFragment)mMediaPlayBackFragment).setMyService(myService);
@@ -61,6 +62,10 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             mBound=false;
         }
     };
+
+    public ICallbackFromService getICallback(){
+        return this;
+    }
 //    @Override
 //    protected void onStart() {
 //        super.onStart();
@@ -205,6 +210,14 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         }
 
         return true;
+    }
+
+    @Override
+    public void updateUI() {
+       Log.d("", "Bkav DucLQ update UI");
+       if(mAllSongFragment != null){
+           mAllSongFragment.updateUI();
+       }
     }
 
     interface IConnectActivityAndBaseSong {

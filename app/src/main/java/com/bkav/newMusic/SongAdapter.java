@@ -100,9 +100,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
         holder.mMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(getMcontext(), holder.mMore);
-                popupMenu.getMenuInflater().inflate(R.menu.popupmenu,popupMenu.getMenu());
-
+                PopupMenu popupMenu = new PopupMenu(mcontext, holder.mMore);
+                if (mTypeSong.equals("AllSong")) {
+                    popupMenu.inflate(R.menu.add_song);
+                }
+                if (mTypeSong.equals("FavoriteSong")) {
+                    popupMenu.inflate(R.menu.remove_song);
+                }
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @Override
                     public boolean onMenuItemClick(MenuItem menuItem) {

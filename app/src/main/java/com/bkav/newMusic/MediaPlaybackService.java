@@ -30,7 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MediaPlaybackService extends Service {
+public class MediaPlaybackService extends Service{
     private static final String NOTIFICATION_CHANNEL_ID="1";
     public static final String ACTION_PERVIOUS = "xxx.yyy.zzz.ACTION_PERVIOUS";
     public static final String ACTION_PLAY = "xxx.yyy.zzz.ACTION_PLAY";
@@ -48,6 +48,15 @@ public class MediaPlaybackService extends Service {
     private int mLoopSong =0;
     private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     private SharedPreferences mSharePreferences;
+    private int mStateMedia = 0;
+    private static final int STATE_PAUSE = 1;
+    private static final int STATE_STOP = 2;
+
+    public void setICallbackFromService(ICallbackFromService iCallbackFromService) {
+        this.mICallbackFromService = iCallbackFromService;
+    }
+
+    private ICallbackFromService mICallbackFromService;
 
     @Override
     public void onCreate() {
@@ -57,7 +66,9 @@ public class MediaPlaybackService extends Service {
         mArtistt=mSharePreferences.getString("artist","NameArtist");
         mFile=mSharePreferences.getString("file","");
         mMinIndex=mSharePreferences.getInt("position",0);
+        mediaPlayer = new MediaPlayer();
     }
+
 
     public int getLoopSong() {
         return mLoopSong;
@@ -171,14 +182,12 @@ public class MediaPlaybackService extends Service {
         return false;
     }
     public boolean isPlaying(){
-        if(mediaPlayer.isPlaying())
-            return true;
-        else
-            return false;
+        return mediaPlayer.isPlaying();
     }
 
     public void pauseSong(){
         mediaPlayer.pause();
+        mStateMedia = STATE_PAUSE;
         showNotification(mNameSong, mArtistt, mPotoMusic);
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
             stopForeground(STOP_FOREGROUND_DETACH);
@@ -272,24 +281,37 @@ public class MediaPlaybackService extends Service {
 
 
     public void playSong(Song song) throws IOException {
-        mediaPlayer = new MediaPlayer();
+        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+                try {
+                    onCompletionSong();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         updateTime();
-        if (isPlaying()) {
+        if (mediaPlayer.isPlaying()==true) {
+            Log.d("nhungancut", "playSong:ok ");
             mediaPlayer.pause();
-        } else {
-            Uri uri = Uri.parse(song.getFile());
+        } else{
+
+            mediaPlayer = new MediaPlayer();
+                Uri uri = Uri.parse(song.getFile());
             mediaPlayer.setDataSource(getApplicationContext(), uri);
             mediaPlayer.prepare();
             mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
             mediaPlayer.start();
-            mNameSong =song.getTitle();
-            mArtistt =song.getArtist();
-            mPotoMusic =song.getFile();
-            mFile =song.getFile();
-            mMinIndex =song.getId()-1;
+            mNameSong = song.getTitle();
+            mArtistt = song.getArtist();
+            mPotoMusic = song.getFile();
+            mFile = song.getFile();
+            mMinIndex = song.getId() - 1;
         }
         Log.d("okok", "playSong: "+mMinIndex);
+
         showNotification(mNameSong, mArtistt, mPotoMusic);
         mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharePreferences.edit();
@@ -301,6 +323,9 @@ public class MediaPlaybackService extends Service {
         editor.putInt("timeCurrent",mediaPlayer.getCurrentPosition());
         editor.putBoolean("isPlaying",true);
         editor.commit();
+        if(mICallbackFromService != null){
+            mICallbackFromService.updateUI();
+        }
     }
 
     public void nextSong() throws IOException {
@@ -333,7 +358,7 @@ public class MediaPlaybackService extends Service {
     }
 
     public void updateTime(){
-        final Handler handler=new Handler();
+        /*final Handler handler=new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -350,7 +375,7 @@ public class MediaPlaybackService extends Service {
                 });
                 handler.postDelayed(this,500);
             }
-        },100);
+        },100);*/
     }
     public void onCompletionSong() throws IOException {
         mediaPlayer.pause();
