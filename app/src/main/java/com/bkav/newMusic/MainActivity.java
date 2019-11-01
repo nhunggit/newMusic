@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             myService = binder.getService();
             myService.setICallbackFromService(getICallback());
             iConnectActivityAndBaseSong.connectActivityAndBaseSong();
+            (mMediaPlayBackFragment).setMyService(myService);
             mBound = true;
         }
 
@@ -160,6 +161,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
             mDrawerLayout = findViewById(R.id.drawer_layout);
             mDrawerLayout.closeDrawer(GravityCompat.START);
+
         } else if (id == R.id.nav_playlist) {
             mStatus = false;
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
@@ -176,6 +178,8 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         mAllSongFragment.updateUI();
         mMediaPlayBackFragment.updateUI();
     }
+
+
     interface IConnectActivityAndBaseSong {
         void connectActivityAndBaseSong();
     }

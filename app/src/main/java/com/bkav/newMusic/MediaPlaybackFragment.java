@@ -213,14 +213,6 @@ public class MediaPlaybackFragment extends Fragment {
                 Toast.makeText(getContext(),  "dislike song //"+myService.getNameSong(), Toast.LENGTH_SHORT).show();
             }
         });
-        ((MainActivity)getActivity()).setiConnectActivityAndBaseSong(new MainActivity.IConnectActivityAndBaseSong() {
-            @Override
-            public void connectActivityAndBaseSong() {
-                myService=((MainActivity)getActivity()).myService;
-                Log.d("service", "connectActivityAndBaseSong: "+myService);
-
-            }
-        });
         updateUI();;
         return view;
     }
