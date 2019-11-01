@@ -92,20 +92,13 @@ public class MediaPlaybackService extends Service{
         return mNameSong;
     }
 
-    public void setmNameSong(String mNameSong) {
-        this.mNameSong = mNameSong;
-    }
-
-    public void setmArtistt(String mArtistt) {
-        this.mArtistt = mArtistt;
-    }
-
-    public void setmFile(String mFile) {
-        this.mFile = mFile;
-    }
 
     public void setmMinIndex(int mMinIndex) {
         this.mMinIndex = mMinIndex;
+    }
+
+    public int getmStateMedia() {
+        return mStateMedia;
     }
 
     private ArrayList<Song> listsong = new ArrayList<>();
@@ -293,21 +286,24 @@ public class MediaPlaybackService extends Service{
         });
         updateTime();
         if (isPlaying()) {
-            Log.d("nhungancut", "playSong:ok ");
-            mediaPlayer.pause();
-        } else{
-            mediaPlayer = new MediaPlayer();
-            Uri uri = Uri.parse(song.getFile());
-            mediaPlayer.setDataSource(getApplicationContext(), uri);
-            mediaPlayer.prepare();
-            mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-            mediaPlayer.start();
-            mNameSong = song.getTitle();
-            mArtistt = song.getArtist();
-            mPotoMusic = song.getFile();
-            mFile = song.getFile();
-            mMinIndex = song.getId() - 1;
+           pauseSong();
+        } else {
+            if (getmStateMedia() == 1) {
+                mediaPlayer.start();
+            } else {
+                mediaPlayer = new MediaPlayer();
+                Uri uri = Uri.parse(song.getFile());
+                mediaPlayer.setDataSource(getApplicationContext(), uri);
+                mediaPlayer.prepare();
+                mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mediaPlayer.start();
+                mNameSong = song.getTitle();
+                mArtistt = song.getArtist();
+                mPotoMusic = song.getFile();
+                mFile = song.getFile();
+                mMinIndex = song.getId() - 1;
+            }
         }
         Log.d("okok", "playSong: "+mMinIndex);
 
@@ -328,6 +324,7 @@ public class MediaPlaybackService extends Service{
     }
 
     public void nextSong() throws IOException {
+        mStateMedia=0;
         mediaPlayer.pause();
         if(mShuffleSong ==true){
             mMinIndex =actionShuffleSong();
@@ -342,7 +339,8 @@ public class MediaPlaybackService extends Service{
 
     }
     public void previousSong() throws IOException {
-        mediaPlayer.stop();
+        mStateMedia=0;
+        mediaPlayer.pause();
         if(mShuffleSong ==true){
             mMinIndex =actionShuffleSong();
         }

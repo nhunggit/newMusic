@@ -94,8 +94,10 @@ public class MediaPlaybackFragment extends Fragment {
 
         boolean ispotraist=getResources().getBoolean(R.bool.ispotraist);
         if(ispotraist==false){
-            if(myService!=null)
+            if(myService!=null) {
+                updateTime();
                 updateUI();
+            }
         }
         if (myService != null) {
             seekBar.setMax(myService.getDurationSong());
@@ -182,18 +184,14 @@ public class MediaPlaybackFragment extends Fragment {
             public void onClick(View v) {
                 if (myService.isPlaying()) {
                     myService.pauseSong();
-                } else {
-                    if(seekBar!=null){
-                        myService.getMediaPlayer().start();
-                    }else {
+                }
+                    else {
                         try {
-//                        Log.d("ok", "onClick: "+myService.getListsong().size()+"///"+position);
                             myService.playSong(myService.getListsong().get(myService.getMinIndex()));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
                     }
-                }
                 updateUI();
             }
         });
@@ -215,7 +213,15 @@ public class MediaPlaybackFragment extends Fragment {
                 Toast.makeText(getContext(),  "dislike song //"+myService.getNameSong(), Toast.LENGTH_SHORT).show();
             }
         });
+        ((MainActivity)getActivity()).setiConnectActivityAndBaseSong(new MainActivity.IConnectActivityAndBaseSong() {
+            @Override
+            public void connectActivityAndBaseSong() {
+                myService=((MainActivity)getActivity()).myService;
+                Log.d("service", "connectActivityAndBaseSong: "+myService);
 
+            }
+        });
+        updateUI();;
         return view;
     }
 
