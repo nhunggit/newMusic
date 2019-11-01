@@ -20,16 +20,16 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
     private static final int LOADER_ID=1;
     private ArrayList<Song> mListAllSong;
 
-    public FavoriteSongFament(ArrayList<Song> mListAllSong){
+    public FavoriteSongFament(ArrayList<Song> mListAllSong, MediaPlaybackService service){
         this.mListAllSong=new ArrayList<>();
         this.mListAllSong=mListAllSong;
+        this.myService=service;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID,null,this);
-
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
@@ -67,6 +67,7 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
                         Log.d("favorite", "onLoadFinished: "+mListFavoriteSongs.get(0).getFile());
                         songAdapter.setOnClickItemView( this);
                         songAdapter.updateList(mListFavoriteSongs);
+                        Log.d("favorite", "onLoadFinished: "+mListFavoriteSongs.size());
                         setSong(mListFavoriteSongs);
                         songAdapter.setmTypeSong("FavoriteSong");
                     }

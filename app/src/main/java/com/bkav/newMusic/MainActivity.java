@@ -66,44 +66,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     public ICallbackFromService getICallback(){
         return this;
     }
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        if (isMyServiceRunning(MediaPlaybackService.class)) {
-//            connectService();
-//        } else {
-//            startService();
-//            connectService();
-//        }
-//    }
-//
-//    public void connectService() {
-//        Intent it = new Intent(MainActivity.this, MediaPlaybackService.class);
-//        bindService(it, mConnection, 0);
-//    }
-//
-//    public void startService() {
-//        Intent it = new Intent(MainActivity.this, MediaPlaybackService.class);
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            startService(it);
-//        }
-//    }
-//
-//    private boolean isMyServiceRunning(Class<?> serviceClass) {
-//        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-//        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-//            if (serviceClass.getName().equals(service.service.getClassName())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//        unbindService(mConnection);
-//    }
+
 @Override
 public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     if (requestCode == 1) {
@@ -121,12 +84,11 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
     public void initPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                //Permisson don't granted
+
                 if (shouldShowRequestPermissionRationale(
                         Manifest.permission.READ_EXTERNAL_STORAGE)) {
                     Toast.makeText(MainActivity.this, "Permission isn't granted ", Toast.LENGTH_SHORT).show();
                 }
-                // Permisson don't granted and dont show dialog again.
                 else {
                     Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
                 }
@@ -171,15 +133,15 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         Intent intent=new Intent(this, MediaPlaybackService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Log.d("okko", "onCreate: ogd"+ispotraist);
+        if(mStatus==true){
+            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1,mFavoriteSongsFragment).commit();
+        }
         if(ispotraist==false) {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
         }
-//        if (mStatus == true) {
-//            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
-//        }
     }
 
     @Override
@@ -197,7 +159,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         if (id == R.id.nav_favorite) {
             Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
             mStatus=true;
-             mFavoriteSongsFragment = new FavoriteSongFament((ArrayList<Song>) myService.getListsong());
+             mFavoriteSongsFragment = new FavoriteSongFament( myService.getListsong(),myService);
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
             mDrawerLayout= findViewById(R.id.drawer_layout);
             mDrawerLayout.closeDrawer(GravityCompat.START);

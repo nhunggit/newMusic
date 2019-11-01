@@ -292,13 +292,12 @@ public class MediaPlaybackService extends Service{
             }
         });
         updateTime();
-        if (mediaPlayer.isPlaying()==true) {
+        if (isPlaying()) {
             Log.d("nhungancut", "playSong:ok ");
             mediaPlayer.pause();
         } else{
-
             mediaPlayer = new MediaPlayer();
-                Uri uri = Uri.parse(song.getFile());
+            Uri uri = Uri.parse(song.getFile());
             mediaPlayer.setDataSource(getApplicationContext(), uri);
             mediaPlayer.prepare();
             mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
