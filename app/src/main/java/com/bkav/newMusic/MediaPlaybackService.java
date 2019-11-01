@@ -101,6 +101,10 @@ public class MediaPlaybackService extends Service{
         return mStateMedia;
     }
 
+    public void setmStateMedia(int mStateMedia) {
+        this.mStateMedia = mStateMedia;
+    }
+
     private ArrayList<Song> listsong = new ArrayList<>();
     public MediaPlayer getMediaPlayer() {
         return mediaPlayer;
@@ -285,9 +289,9 @@ public class MediaPlaybackService extends Service{
             }
         });
         updateTime();
-        if (isPlaying()) {
-           pauseSong();
-        } else {
+//        if (isPlaying()) {
+//           pauseSong();
+//        } else {
             if (getmStateMedia() == 1) {
                 mediaPlayer.start();
             } else {
@@ -304,7 +308,7 @@ public class MediaPlaybackService extends Service{
                 mFile = song.getFile();
                 mMinIndex = song.getId() - 1;
             }
-        }
+       // }
         Log.d("okok", "playSong: "+mMinIndex);
 
         showNotification(mNameSong, mArtistt, mPotoMusic);

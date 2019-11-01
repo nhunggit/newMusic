@@ -174,6 +174,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
     @Override
     public void ClickItem(int position) {
+        myService.setmStateMedia(0);
         myService.setListSong(songs);
         myService.setmMinIndex(position);
         if(ispotraist==true) {
@@ -184,15 +185,11 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         }
 
         try {
-            if (myService.isMusicPlay()) {
                 if (myService.isPlaying()) {
-                    myService.pauseSong();
-                }
+                   myService.getMediaPlayer().pause();
                     myService.playSong(songs.get(position));
-            }
-            else {
-                myService.playSong(songs.get(position));
-            }
+                }else
+                    myService.playSong(songs.get(position));
             String selection = " id_provider =" + songs.get(position).getId();
             Cursor c = getActivity().managedQuery(mURISong, null, selection, null, null);
             if (c.moveToFirst()) {
