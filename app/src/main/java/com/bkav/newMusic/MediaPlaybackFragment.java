@@ -1,8 +1,6 @@
 package com.bkav.newMusic;
 
 import android.content.ContentValues;
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.icu.text.SimpleDateFormat;
@@ -133,7 +131,7 @@ public class MediaPlaybackFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                myService.getMediaPlayer().seekTo(seekBar.getProgress());
+                myService.getmMediaPlayer().seekTo(seekBar.getProgress());
             }
         });
         repeat.setOnClickListener(new View.OnClickListener() {
@@ -242,7 +240,7 @@ public class MediaPlaybackFragment extends Fragment {
                 SimpleDateFormat formatTime = new SimpleDateFormat("mm:ss");
                 timeCurrent.setText(formatTime.format(myService.getCurrentTime()));
                 seekBar.setProgress(myService.getCurrentTime());
-                myService.getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                myService.getmMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         try {

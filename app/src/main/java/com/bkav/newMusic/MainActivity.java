@@ -1,45 +1,38 @@
 package com.bkav.newMusic;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import com.google.android.material.navigation.NavigationView;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, ICallbackFromService{
 
-    MediaPlaybackService myService;
-    boolean mBound=false;
-    AllSongsFragment mAllSongFragment;
-    Fragment mMediaPlayBackFragment;
+    protected MediaPlaybackService mMediaPlaybackService;
+    private boolean mBound=false;
+    private AllSongsFragment mAllSongFragment;
+    private Fragment mMediaPlayBackFragment;
     private  boolean mStatus=false;
-    Fragment mFavoriteSongsFragment;
+    private Fragment mFavoriteSongsFragment;
     private DrawerLayout mDrawerLayout;
     private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
     boolean ispotraist = true;
@@ -52,11 +45,11 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MediaPlaybackService.LocalBinder binder=(MediaPlaybackService.LocalBinder) service;
-            myService=binder.getService();
-            myService.setICallbackFromService(getICallback());
-            Log.d("BKAV DucLQ", " Bkav DucLQ bind service myService "+ myService);
+            mMediaPlaybackService =binder.getService();
+            mMediaPlaybackService.setICallbackFromService(getICallback());
+            Log.d("BKAV DucLQ", " Bkav DucLQ bind service myService "+ mMediaPlaybackService);
             iConnectActivityAndBaseSong.connectActivityAndBaseSong();
-            ((MediaPlaybackFragment)mMediaPlayBackFragment).setMyService(myService);
+            ((MediaPlaybackFragment)mMediaPlayBackFragment).setMyService(mMediaPlaybackService);
             mBound=true;
         }
         @Override
@@ -95,7 +88,6 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
                 else {
                     Toast.makeText(MainActivity.this, "Permisson don't granted and dont show dialog again ", Toast.LENGTH_SHORT).show();
                 }
-                //Register permission
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
 
             }
@@ -132,12 +124,19 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         ispotraist=getResources().getBoolean(R.bool.ispotraist);
         mAllSongFragment = new AllSongsFragment();
         mMediaPlayBackFragment = new MediaPlaybackFragment();
+        mFavoriteSongsFragment = new FavoriteSongFament();
         Intent intent=new Intent(this, MediaPlaybackService.class);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Log.d("okko", "onCreate: ogd"+ispotraist);
         if(!ispotraist) {
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
+            if(mStatus){
+                mFavoriteSongsFragment = new FavoriteSongFament( mMediaPlaybackService.getListsong(), mMediaPlaybackService);
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
+            }else {
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
+            }
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
         }
@@ -158,7 +157,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         if (id == R.id.nav_favorite) {
             Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
             mStatus=true;
-             mFavoriteSongsFragment = new FavoriteSongFament( myService.getListsong(),myService);
+             mFavoriteSongsFragment = new FavoriteSongFament( mMediaPlaybackService.getListsong(), mMediaPlaybackService);
              getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
             mDrawerLayout= findViewById(R.id.drawer_layout);
             mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -169,7 +168,6 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
             mDrawerLayout= findViewById(R.id.drawer_layout);
             mDrawerLayout.closeDrawer(GravityCompat.START);
         }
-
         return true;
     }
 

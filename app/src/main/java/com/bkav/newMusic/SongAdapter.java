@@ -21,20 +21,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder> {
-    ArrayList<Song> mSong;
-    Context mcontext;
-    OnClickItemView onClickItemView;
-    MediaPlaybackService myService;
-    private ArrayList<Song> listSongFavorite=new ArrayList<>();
+    private ArrayList<Song> mListSong;
+    private Context mContext;
+    private OnClickItemView iOnClickItemView;
+    private MediaPlaybackService mMediaPlaybackService;
     private String mTypeSong="";
-    int k=0;
-    TextView mnameSong;
 
-    public void setListSongFavorite(ArrayList<Song> listSongFavorite) {
-        this.listSongFavorite = listSongFavorite;
-    }
+
     public void updateList(ArrayList<Song> songs){
-        mSong=songs;
+        mListSong =songs;
         notifyDataSetChanged();
     }
 
@@ -42,21 +37,21 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
         this.mTypeSong = mTypeSong;
     }
 
-    public Context getMcontext() {
-        return mcontext;
+    public Context getmContext() {
+        return mContext;
     }
 
-    public void setMyService(MediaPlaybackService myService) {
-        this.myService = myService;
+    public void setmMediaPlaybackService(MediaPlaybackService mMediaPlaybackService) {
+        this.mMediaPlaybackService = mMediaPlaybackService;
     }
 
-    public void setmSong(ArrayList<Song> mSong) {
-        this.mSong = mSong;
+    public void setmListSong(ArrayList<Song> mListSong) {
+        this.mListSong = mListSong;
     }
 
     public SongAdapter(ArrayList<Song> mSong, Context mcontext) {
-        this.mSong = mSong;
-        this.mcontext = mcontext;
+        this.mListSong = mSong;
+        this.mContext = mcontext;
     }
 
     @NonNull
@@ -70,29 +65,29 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
     @Override
     public void onBindViewHolder(@NonNull final WordViewHolder holder, final int position) {
 
-        holder.mstt.setText(mSong.get(position).getId() + "");
-        holder.mnameSong.setText(mSong.get(position).getTitle());
+        holder.mstt.setText(mListSong.get(position).getId() + "");
+        holder.mnameSong.setText(mListSong.get(position).getTitle());
         SimpleDateFormat formmatTime = new SimpleDateFormat("mm:ss");
-        holder.mHours.setText(formmatTime.format(mSong.get(position).getDuration()));
+        holder.mHours.setText(formmatTime.format(mListSong.get(position).getDuration()));
         holder.mMore.setImageResource(R.drawable.ic_more_vert_black_24dp);
         holder.constraintLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickItemView.ClickItem(position);
+                iOnClickItemView.ClickItem(position);
             }
         });
 
-        if(myService!=null){
+        if(mMediaPlaybackService !=null){
             //Log.d("adapter", "onBindViewHolder: "+"ok");
-            if((myService.getNameSong()).equals(mSong.get(position).getTitle())==true){
-                Log.d("compare", "onBindViewHolder: "+myService.getNameSong()+mSong.get(position).getTitle());
+            if((mMediaPlaybackService.getNameSong()).equals(mListSong.get(position).getTitle())==true){
+                Log.d("compare", "onBindViewHolder: "+ mMediaPlaybackService.getNameSong()+ mListSong.get(position).getTitle());
                 holder.mnameSong.setTypeface(Typeface.DEFAULT,Typeface.BOLD);
                 holder.mstt.setText("");
                 holder.mstt.setBackgroundResource(R.drawable.ic_equalizer_black_24dp);
             }
             else{
                 holder.mstt.setBackgroundResource(R.drawable.ic_equalizer_while_24dp);
-                holder.mstt.setText(mSong.get(position).getId() + "");
+                holder.mstt.setText(mListSong.get(position).getId() + "");
                 holder.mnameSong.setTypeface(Typeface.DEFAULT,Typeface.NORMAL);
             }
         }
@@ -100,7 +95,7 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
         holder.mMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PopupMenu popupMenu = new PopupMenu(mcontext, holder.mMore);
+                PopupMenu popupMenu = new PopupMenu(mContext, holder.mMore);
                 if (mTypeSong.equals("AllSong")) {
                     popupMenu.inflate(R.menu.add_song);
                 }
@@ -114,16 +109,16 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
                             case R.id.addFavorite:
                                 ContentValues values = new ContentValues();
                                 values.put(FavoriteSongsProvider.FAVORITE, 2);
-                                getMcontext().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, FavoriteSongsProvider.ID_PROVIDER + "= " + mSong.get(position).getId(), null);
-                                Toast.makeText(mcontext, "addFavorite song //" + mSong.get(position).getTitle(), Toast.LENGTH_SHORT).show();
+                                getmContext().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values, FavoriteSongsProvider.ID_PROVIDER + "= " + mListSong.get(position).getId(), null);
+                                Toast.makeText(mContext, "addFavorite song //" + mListSong.get(position).getTitle(), Toast.LENGTH_SHORT).show();
                                 return true;
                             case R.id.removeFavorite:
                                 ContentValues values1 = new ContentValues();
                                 values1.put(FavoriteSongsProvider.FAVORITE, 1);
                                 values1.put(FavoriteSongsProvider.COUNT, 0);
-                                mcontext.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values1, FavoriteSongsProvider.ID_PROVIDER + "= " + mSong.get(position).getId(), null);
+                                mContext.getContentResolver().update(FavoriteSongsProvider.CONTENT_URI, values1, FavoriteSongsProvider.ID_PROVIDER + "= " + mListSong.get(position).getId(), null);
 
-                                Toast.makeText(mcontext, "removeFavorite song //" +mSong.get(position).getTitle(), Toast.LENGTH_SHORT).show();// lôi
+                                Toast.makeText(mContext, "removeFavorite song //" + mListSong.get(position).getTitle(), Toast.LENGTH_SHORT).show();// lôi
                                 return true;
                         }
                         return false;
@@ -138,13 +133,13 @@ public class SongAdapter extends RecyclerView.Adapter<SongAdapter.WordViewHolder
 
     }
 
-    public void setOnClickItemView(OnClickItemView onClickItemView) {
-        this.onClickItemView = onClickItemView;
+    public void setiOnClickItemView(OnClickItemView iOnClickItemView) {
+        this.iOnClickItemView = iOnClickItemView;
     }
 
     @Override
     public int getItemCount() {
-        return mSong.size();
+        return mListSong.size();
     }
 
 

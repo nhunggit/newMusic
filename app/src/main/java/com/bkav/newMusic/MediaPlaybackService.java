@@ -16,7 +16,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Binder;
 import android.os.Build;
-import android.os.Handler;
 import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
@@ -37,7 +36,7 @@ public class MediaPlaybackService extends Service{
     public static final String ACTION_NEXT = "xxx.yyy.zzz.ACTION_NEXT";
     private final IBinder mBinder = new LocalBinder();
     private final Random mRandom = new Random();
-    private MediaPlayer mediaPlayer=null;
+    private MediaPlayer mMediaPlayer =null;
     private String mNameSong ="";
     private String mArtistt ="";
     private String  mPotoMusic ="";
@@ -49,7 +48,6 @@ public class MediaPlaybackService extends Service{
     private SharedPreferences mSharePreferences;
     private int mStateMedia = 0;
     private static final int STATE_PAUSE = 1;
-    private boolean isPlaying;
 
     public void setICallbackFromService(ICallbackFromService iCallbackFromService) {
         this.mICallbackFromService = iCallbackFromService;
@@ -65,8 +63,7 @@ public class MediaPlaybackService extends Service{
         mArtistt=mSharePreferences.getString("artist","NameArtist");
         mFile=mSharePreferences.getString("file","");
         mMinIndex=mSharePreferences.getInt("position",0);
-        isPlaying=mSharePreferences.getBoolean("isPlaying",false);
-        mediaPlayer = new MediaPlayer();
+        mMediaPlayer = new MediaPlayer();
     }
 
 
@@ -106,8 +103,8 @@ public class MediaPlaybackService extends Service{
     }
 
     private ArrayList<Song> listsong = new ArrayList<>();
-    public MediaPlayer getMediaPlayer() {
-        return mediaPlayer;
+    public MediaPlayer getmMediaPlayer() {
+        return mMediaPlayer;
     }
     public void setListSong(ArrayList<Song> mListAllSong) {
         this.listsong = mListAllSong;
@@ -140,7 +137,7 @@ public class MediaPlaybackService extends Service{
                         e.printStackTrace();
                     }
                 case ACTION_PLAY:
-                    if(mediaPlayer.isPlaying())
+                    if(mMediaPlayer.isPlaying())
                         pauseSong();
                     else {
                         try {
@@ -173,17 +170,17 @@ public class MediaPlaybackService extends Service{
         this.mShuffleSong =shuffleSong;
     }
     public boolean isMusicPlay() {
-        if (mediaPlayer != null) {
+        if (mMediaPlayer != null) {
             return true;
         }
         return false;
     }
     public boolean isPlaying(){
-        return mediaPlayer.isPlaying();
+        return mMediaPlayer.isPlaying();
     }
 
     public void pauseSong(){
-        mediaPlayer.pause();
+        mMediaPlayer.pause();
         mStateMedia = STATE_PAUSE;
         showNotification(mNameSong, mArtistt, mPotoMusic);
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
@@ -195,14 +192,14 @@ public class MediaPlaybackService extends Service{
 
     }
     public int getDurationSong(){
-        return mediaPlayer.getDuration();
+        return mMediaPlayer.getDuration();
     }
     public int getCurrentTime(){
-        return mediaPlayer.getCurrentPosition();
+        return mMediaPlayer.getCurrentPosition();
     }
     public String getDuration() {
         SimpleDateFormat formmatTime = new SimpleDateFormat("mm:ss");
-        return formmatTime.format(mediaPlayer.getDuration());
+        return formmatTime.format(mMediaPlayer.getDuration());
     }
 
     public void showNotification(String nameSong, String nameArtist, String path){
@@ -277,7 +274,7 @@ public class MediaPlaybackService extends Service{
 
 
     public void playSong(Song song) throws IOException {
-        mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mp) {
                 try {
@@ -288,15 +285,15 @@ public class MediaPlaybackService extends Service{
             }
         });
             if (getmStateMedia() == 1) {
-                mediaPlayer.start();
+                mMediaPlayer.start();
             } else {
-                mediaPlayer = new MediaPlayer();
+                mMediaPlayer = new MediaPlayer();
                 Uri uri = Uri.parse(song.getFile());
-                mediaPlayer.setDataSource(getApplicationContext(), uri);
-                mediaPlayer.prepare();
-                mediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-                mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-                mediaPlayer.start();
+                mMediaPlayer.setDataSource(getApplicationContext(), uri);
+                mMediaPlayer.prepare();
+                mMediaPlayer.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+                mMediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                mMediaPlayer.start();
                 mNameSong = song.getTitle();
                 mArtistt = song.getArtist();
                 mPotoMusic = song.getFile();
@@ -313,8 +310,8 @@ public class MediaPlaybackService extends Service{
         editor.putString("artist",getNameArtist());
         editor.putString("file",getFile());
         editor.putInt("position",getMinIndex());
-        editor.putInt("timeFinish",mediaPlayer.getDuration());
-        editor.putInt("timeCurrent",mediaPlayer.getCurrentPosition());
+        editor.putInt("timeFinish", mMediaPlayer.getDuration());
+        editor.putInt("timeCurrent", mMediaPlayer.getCurrentPosition());
         editor.putBoolean("isPlaying",true);
         editor.commit();
         if(mICallbackFromService != null){
@@ -324,7 +321,7 @@ public class MediaPlaybackService extends Service{
 
     public void nextSong() throws IOException {
         mStateMedia=0;
-        mediaPlayer.pause();
+        mMediaPlayer.pause();
         if(mShuffleSong ==true){
             mMinIndex =actionShuffleSong();
         }
@@ -339,7 +336,7 @@ public class MediaPlaybackService extends Service{
     }
     public void previousSong() throws IOException {
         mStateMedia=0;
-        mediaPlayer.pause();
+        mMediaPlayer.pause();
         if(mShuffleSong ==true){
             mMinIndex =actionShuffleSong();
         }
@@ -353,7 +350,7 @@ public class MediaPlaybackService extends Service{
 
     }
     public void onCompletionSong() throws IOException {
-        mediaPlayer.pause();
+        mMediaPlayer.pause();
         if(mLoopSong ==0){
             if(mMinIndex <listsong.size()-1){
                 mMinIndex++;

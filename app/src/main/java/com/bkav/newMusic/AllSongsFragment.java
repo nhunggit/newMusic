@@ -1,31 +1,21 @@
 package com.bkav.newMusic;
 
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -34,8 +24,6 @@ public class AllSongsFragment extends BaseListSongFrament implements LoaderManag
 
     private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     private SharedPreferences mSharePreferences;
-    private int position=0;
-    private MediaPlaybackFragment songFragment=new MediaPlaybackFragment();
     private static final int LOADER_ID = 1;
     @Nullable
     @Override
@@ -96,10 +84,10 @@ public class AllSongsFragment extends BaseListSongFrament implements LoaderManag
                 }
             }
         }
-        songAdapter.setOnClickItemView( this);
-        songAdapter.updateList(songs);
+        mSongAdapter.setiOnClickItemView( this);
+        mSongAdapter.updateList(songs);
         setSong(songs);
-        songAdapter.setmTypeSong("AllSong");
+        mSongAdapter.setmTypeSong("AllSong");
     }
 
     @Override

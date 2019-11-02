@@ -23,7 +23,10 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
     public FavoriteSongFament(ArrayList<Song> mListAllSong, MediaPlaybackService service){
         this.mListAllSong=new ArrayList<>();
         this.mListAllSong=mListAllSong;
-        this.myService=service;
+        this.mMediaPlaybackService=service;
+    }
+
+    public FavoriteSongFament() {
     }
 
     @Nullable
@@ -64,11 +67,11 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
                             dem++;
                             mListFavoriteSongs.add(song);
                         }
-                        songAdapter.setOnClickItemView( this);
-                        songAdapter.updateList(mListFavoriteSongs);
+                        mSongAdapter.setiOnClickItemView( this);
+                        mSongAdapter.updateList(mListFavoriteSongs);
                         Log.d("favorite", "onLoadFinished: "+mListFavoriteSongs.size());
                         setSong(mListFavoriteSongs);
-                        songAdapter.setmTypeSong("FavoriteSong");
+                        mSongAdapter.setmTypeSong("FavoriteSong");
                     }
                 }
             } while (data.moveToNext());
