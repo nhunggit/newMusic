@@ -129,8 +129,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 Log.d("service", "connectActivityAndBaseSong: "+myService);
                 songAdapter.setMyService(myService);
                 songFragment.setMyService(myService);
-                updateUI();
-
             }
         });
         return view;
