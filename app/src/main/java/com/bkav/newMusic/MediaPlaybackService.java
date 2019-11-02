@@ -42,7 +42,6 @@ public class MediaPlaybackService extends Service{
     private String mArtistt ="";
     private String  mPotoMusic ="";
     private String mFile ="";
-    private int mPosition=0;
     private boolean mShuffleSong =false;
     private int mMinIndex;
     private int mLoopSong =0;
@@ -50,7 +49,7 @@ public class MediaPlaybackService extends Service{
     private SharedPreferences mSharePreferences;
     private int mStateMedia = 0;
     private static final int STATE_PAUSE = 1;
-    private static final int STATE_STOP = 2;
+    private boolean isPlaying;
 
     public void setICallbackFromService(ICallbackFromService iCallbackFromService) {
         this.mICallbackFromService = iCallbackFromService;
@@ -66,6 +65,7 @@ public class MediaPlaybackService extends Service{
         mArtistt=mSharePreferences.getString("artist","NameArtist");
         mFile=mSharePreferences.getString("file","");
         mMinIndex=mSharePreferences.getInt("position",0);
+        isPlaying=mSharePreferences.getBoolean("isPlaying",false);
         mediaPlayer = new MediaPlayer();
     }
 
@@ -189,10 +189,9 @@ public class MediaPlaybackService extends Service{
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
             stopForeground(STOP_FOREGROUND_DETACH);
         }
-        SharedPreferences.Editor editor=mSharePreferences.edit();
+        mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharePreferences.edit();
         editor.putBoolean("isPlaying",false);
-        editor.commit();
-
 
     }
     public int getDurationSong(){
@@ -288,10 +287,6 @@ public class MediaPlaybackService extends Service{
                 }
             }
         });
-        updateTime();
-//        if (isPlaying()) {
-//           pauseSong();
-//        } else {
             if (getmStateMedia() == 1) {
                 mediaPlayer.start();
             } else {
@@ -357,27 +352,6 @@ public class MediaPlaybackService extends Service{
         playSong(listsong.get(mMinIndex));
 
     }
-
-    public void updateTime(){
-        /*final Handler handler=new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                getMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mp) {
-                        try {
-                            onCompletionSong();
-
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-                handler.postDelayed(this,500);
-            }
-        },100);*/
-    }
     public void onCompletionSong() throws IOException {
         mediaPlayer.pause();
         if(mLoopSong ==0){
@@ -410,7 +384,6 @@ public class MediaPlaybackService extends Service{
         mediaPlayer.pause();
         return super.onUnbind(intent);
     }
-    //phương thức cho client
 
 
 }

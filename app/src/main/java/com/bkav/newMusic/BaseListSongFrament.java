@@ -49,9 +49,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
     private Uri mURISong = Uri.parse(mURL);
     private MediaPlaybackFragment songFragment=new MediaPlaybackFragment();
     ArrayList<Song> songs = new ArrayList<>();
-    public ArrayList<Song> getListsong() {
-        return songs;
-    }
     boolean ispotraist;
     @Nullable
     @Override
@@ -97,8 +94,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 }
             });
         }
-//        if (mSharePreferences.getString("nameSong", "").equals(""))
-//            constraintLayout.setVisibility(View.GONE);
         buttonPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +115,8 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         });
         if(ispotraist==false){
             mConstraitLayout.setVisibility(android.view.View.GONE);
+        }else if(ispotraist){
+            mConstraitLayout.setVisibility(android.view.View.VISIBLE);
         }
         if(myService!=null){
             updateUI();
@@ -131,33 +128,23 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 myService=((MainActivity)getActivity()).myService;
                 Log.d("service", "connectActivityAndBaseSong: "+myService);
                 songAdapter.setMyService(myService);
-             //   updateUI();
+                songFragment.setMyService(myService);
+                updateUI();
 
             }
         });
         return view;
     }
-
     public void setSong(ArrayList<Song> songs){
         this.songs=songs;
         songAdapter.setmSong(songs);
     }
 
 
-
-    //    @Override
-//    public void onCreate(@Nullable Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        LoaderManager.getInstance(this).initLoader(LOADER_ID, null, this);
-//
-//    }
-
     public void updateUI(){
 
         if(myService.isMusicPlay()){
             Log.d("abc1", "ClickItem: "+myService.getNameSong());
-            //constraintLayout.setVisibility(View.VISIBLE);
-            //myService.updateTime();
             disk.setImageBitmap(myService.getAlbumn(myService.getFile()));
             NameSongPlaying.setText(myService.getNameSong());
             artist.setText(myService.getNameArtist());
@@ -165,8 +152,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 buttonPlay.setImageResource(R.drawable.ic_pause);
             }else
                 buttonPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
-
-            // if((myService.getNameSong()).equals(songs))
             songAdapter.notifyDataSetChanged();
 
         }
@@ -230,5 +215,5 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         }
         songAdapter.setMyService(myService);
     }
-
 }
+
