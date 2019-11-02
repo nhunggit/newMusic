@@ -80,4 +80,5 @@ public class FavoriteSongFament extends BaseListSongFrament implements LoaderMan
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
 
     }
+
 }

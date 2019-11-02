@@ -76,18 +76,9 @@ public class MediaPlaybackFragment extends Fragment {
             }
         });
 
-        boolean ispotraist=getResources().getBoolean(R.bool.ispotraist);
-        if(ispotraist==false){
-            if(myService!=null) {
-                updateTime();
-                updateUI();
-            }
-        }
         if (myService != null) {
             seekBar.setMax(myService.getDurationSong());
-            if(myService.isPlaying()) {
                 updateUI();
-            }
         }
         shuffle.setOnClickListener(new View.OnClickListener() {
 

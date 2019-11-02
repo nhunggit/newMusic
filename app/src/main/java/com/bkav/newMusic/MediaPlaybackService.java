@@ -381,7 +381,7 @@ public class MediaPlaybackService extends Service{
 
     @Override
     public boolean onUnbind(Intent intent) {
-        mediaPlayer.pause();
+       // mediaPlayer.pause();
         return super.onUnbind(intent);
     }
 

@@ -63,6 +63,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         public void onServiceDisconnected(ComponentName name) {
             mBound=false;
         }
+
     };
 
     public ICallbackFromService getICallback(){
@@ -158,7 +159,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
             Toast.makeText(this, "favorite", Toast.LENGTH_SHORT).show();
             mStatus=true;
              mFavoriteSongsFragment = new FavoriteSongFament( myService.getListsong(),myService);
-            getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
+             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
             mDrawerLayout= findViewById(R.id.drawer_layout);
             mDrawerLayout.closeDrawer(GravityCompat.START);
 

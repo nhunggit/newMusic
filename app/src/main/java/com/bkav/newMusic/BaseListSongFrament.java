@@ -83,13 +83,14 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 @Override
                 public void onClick(View v) {
                     songFragment.setMyService(myService);
+                    Log.d("srv", "onClick: "+myService);
                     getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragment1,songFragment).commit();
                 }
             });}else{
             mConstraitLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    songFragment.setMyService(myService);
+                   songFragment.setMyService(myService);
                     getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragment2,songFragment).commit();
                 }
             });
@@ -131,6 +132,9 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 songFragment.setMyService(myService);
             }
         });
+        if(myService!=null){
+            updateUI();
+        }
         return view;
     }
     public void setSong(ArrayList<Song> songs){
