@@ -27,77 +27,74 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class MediaPlaybackFragment extends Fragment {
-    MediaPlaybackService myService;
-    TextView nameSong;
-    TextView nameArtist;
-    ImageView potoMusic;
-    ImageView potoMusic2;
-    SeekBar seekBar;
-    TextView timeCurrent;
-    TextView timeFinish;
-    ImageView like;
-    ImageView diskLike;
-    ImageView play;
-    ImageView next;
-    ImageView previous;
-    ImageView repeat;
-    ImageView shuffle;
-    ImageView listmusic;
-    ArrayList<Song> song=new ArrayList<>();
-    BaseListSongFrament baseListSongFrament;
-    String name="ok";
+    private MediaPlaybackService mMediaPlaybackService;
+    private TextView mNameSong;
+    private TextView mNameArtist;
+    private ImageView mPotoMusic;
+    private ImageView potoMusic2;
+    private SeekBar mSeekbar;
+    private TextView mTimeCurrent;
+    private TextView mTimeFinish;
+    private ImageView mLike;
+    private ImageView mDiskLike;
+    private ImageView mPlay;
+    private ImageView mNext;
+    private ImageView mPrevious;
+    private ImageView mRepeat;
+    private ImageView mShuffle;
+    private ImageView mListMusic;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.baihat, container, false);
-        listmusic=(ImageView) view.findViewById(R.id.listMusic);
-        seekBar = (SeekBar) view.findViewById(R.id.seekbar);
+        mListMusic =(ImageView) view.findViewById(R.id.listMusic);
+        mSeekbar = (SeekBar) view.findViewById(R.id.seekbar);
         potoMusic2 = (ImageView) view.findViewById(R.id.imgBackGround);
-        nameSong = (TextView) view.findViewById(R.id.namesong);
-        nameArtist = (TextView) view.findViewById(R.id.nameArtist);
-        timeCurrent = (TextView) view.findViewById(R.id.starttime);
-        timeFinish = (TextView) view.findViewById(R.id.finishTime);
-        potoMusic = (ImageView) view.findViewById(R.id.disk);
-        like = (ImageView) view.findViewById(R.id.like);
-        diskLike = (ImageView) view.findViewById(R.id.dislike);
-        play = (ImageView) view.findViewById(R.id.Play);
-        next = (ImageView) view.findViewById(R.id.next);
-        repeat = (ImageView) view.findViewById(R.id.repeat);
-        shuffle = (ImageView) view.findViewById(R.id.shuffle);
-        previous = (ImageView) view.findViewById(R.id.previous);
+        mNameSong = (TextView) view.findViewById(R.id.namesong);
+        mNameArtist = (TextView) view.findViewById(R.id.nameArtist);
+        mTimeCurrent = (TextView) view.findViewById(R.id.starttime);
+        mTimeFinish = (TextView) view.findViewById(R.id.finishTime);
+        mPotoMusic = (ImageView) view.findViewById(R.id.disk);
+        mLike = (ImageView) view.findViewById(R.id.like);
+        mDiskLike = (ImageView) view.findViewById(R.id.dislike);
+        mPlay = (ImageView) view.findViewById(R.id.Play);
+        mNext = (ImageView) view.findViewById(R.id.next);
+        mRepeat = (ImageView) view.findViewById(R.id.repeat);
+        mShuffle = (ImageView) view.findViewById(R.id.shuffle);
+        mPrevious = (ImageView) view.findViewById(R.id.previous);
 
-        listmusic.setOnClickListener(new View.OnClickListener() {
+        mListMusic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 getFragmentManager().popBackStack();
             }
         });
 
-        if (myService != null) {
-            seekBar.setMax(myService.getDurationSong());
+        if (mMediaPlaybackService != null) {
+            mSeekbar.setMax(mMediaPlaybackService.getDurationSong());
                 updateUI();
         }
-        shuffle.setOnClickListener(new View.OnClickListener() {
+        mShuffle.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if (myService.isShuffleSong()) {
-                    myService.setShuffleSong(false);
-                    shuffle.setBackgroundResource(R.drawable.ic_shuffle_black_50dp);
+                if (mMediaPlaybackService.isShuffleSong()) {
+                    mMediaPlaybackService.setShuffleSong(false);
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_black_50dp);
                 } else {
-                    myService.setShuffleSong(true);
-                    shuffle.setBackgroundResource(R.drawable.ic_shuffle_yellow_24dp);
+                    mMediaPlaybackService.setShuffleSong(true);
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_yellow_24dp);
                 }
             }
         });
-        next.setOnClickListener(new View.OnClickListener() {
+        mNext.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if (myService != null) {
+                if (mMediaPlaybackService != null) {
                     try {
-                        myService.nextSong();
+                        mMediaPlaybackService.nextSong();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -105,12 +102,12 @@ public class MediaPlaybackFragment extends Fragment {
                 }
             }
         });
-        previous.setOnClickListener(new View.OnClickListener() {
+        mPrevious.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (myService != null) {
+                if (mMediaPlaybackService != null) {
                     try {
-                        myService.previousSong();
+                        mMediaPlaybackService.previousSong();
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -118,7 +115,7 @@ public class MediaPlaybackFragment extends Fragment {
                 }
             }
         });
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+        mSeekbar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
@@ -131,36 +128,36 @@ public class MediaPlaybackFragment extends Fragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                myService.getmMediaPlayer().seekTo(seekBar.getProgress());
+                mMediaPlaybackService.getmMediaPlayer().seekTo(seekBar.getProgress());
             }
         });
-        repeat.setOnClickListener(new View.OnClickListener() {
+        mRepeat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d("ok", "onClick: "+myService.getLoopSong());
-                if (myService.getLoopSong() == 0) {
-                    myService.setLoopSong(-1);
-                    repeat.setBackgroundResource(R.drawable.ic_repeat_yellow_24dp);
+                Log.d("ok", "onClick: "+ mMediaPlaybackService.getLoopSong());
+                if (mMediaPlaybackService.getLoopSong() == 0) {
+                    mMediaPlaybackService.setLoopSong(-1);
+                    mRepeat.setBackgroundResource(R.drawable.ic_repeat_yellow_24dp);
                 } else {
-                    if (myService.getLoopSong() == 1) {
-                        myService.setLoopSong(0);
-                        repeat.setBackgroundResource(R.drawable.ic_repeat_white_24dp);
+                    if (mMediaPlaybackService.getLoopSong() == 1) {
+                        mMediaPlaybackService.setLoopSong(0);
+                        mRepeat.setBackgroundResource(R.drawable.ic_repeat_white_24dp);
                     } else {
-                        myService.setLoopSong(1);
-                        repeat.setBackgroundResource(R.drawable.ic_repeat_one_yellow_24dp);
+                        mMediaPlaybackService.setLoopSong(1);
+                        mRepeat.setBackgroundResource(R.drawable.ic_repeat_one_yellow_24dp);
                     }
                 }
             }
         });
-        play.setOnClickListener(new View.OnClickListener() {
+        mPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (myService.isPlaying()) {
-                    myService.pauseSong();
+                if (mMediaPlaybackService.isPlaying()) {
+                    mMediaPlaybackService.pauseSong();
                 }
                     else {
                         try {
-                            myService.playSong(myService.getListsong().get(myService.getMinIndex()));
+                            mMediaPlaybackService.playSong(mMediaPlaybackService.getListsong().get(mMediaPlaybackService.getMinIndex()));
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -168,22 +165,22 @@ public class MediaPlaybackFragment extends Fragment {
                 updateUI();
             }
         });
-        like.setOnClickListener(new View.OnClickListener() {
+        mLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ContentValues values = new ContentValues();
                 values.put(FavoriteSongsProvider.FAVORITE,2);
-                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI,values,FavoriteSongsProvider.ID_PROVIDER +"= "+myService.getMinIndex(),null);
-                Toast.makeText(getContext(),  "like song //"+myService.getNameSong(), Toast.LENGTH_SHORT).show();
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI,values,FavoriteSongsProvider.ID_PROVIDER +"= "+ mMediaPlaybackService.getMinIndex(),null);
+                Toast.makeText(getContext(),  "like song //"+ mMediaPlaybackService.getNameSong(), Toast.LENGTH_SHORT).show();
             }
         });
-        diskLike.setOnClickListener(new View.OnClickListener() {
+        mDiskLike.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ContentValues values = new ContentValues();
                 values.put(FavoriteSongsProvider.FAVORITE,1);
-                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI,values,FavoriteSongsProvider.ID_PROVIDER +"= "+myService.getMinIndex(),null);
-                Toast.makeText(getContext(),  "dislike song //"+myService.getNameSong(), Toast.LENGTH_SHORT).show();
+                getActivity().getContentResolver().update(FavoriteSongsProvider.CONTENT_URI,values,FavoriteSongsProvider.ID_PROVIDER +"= "+ mMediaPlaybackService.getMinIndex(),null);
+                Toast.makeText(getContext(),  "dislike song //"+ mMediaPlaybackService.getNameSong(), Toast.LENGTH_SHORT).show();
             }
         });
         return view;
@@ -197,34 +194,34 @@ public class MediaPlaybackFragment extends Fragment {
     }
 
     public void updateUI() {
-        if (myService != null && seekBar != null) {
-            if (myService.isMusicPlay()) {
+        if (mMediaPlaybackService != null && mSeekbar != null) {
+            if (mMediaPlaybackService.isMusicPlay()) {
                 updateTime();
-                seekBar.setMax(myService.getDurationSong());
-                nameSong.setText(myService.getNameSong());
-                nameArtist.setText(myService.getNameArtist());
-                Bitmap bitmap = getAlbumn(myService.getPotoMusic());
-                potoMusic.setImageBitmap(bitmap);
+                mSeekbar.setMax(mMediaPlaybackService.getDurationSong());
+                mNameSong.setText(mMediaPlaybackService.getNameSong());
+                mNameArtist.setText(mMediaPlaybackService.getNameArtist());
+                Bitmap bitmap = getAlbumn(mMediaPlaybackService.getPotoMusic());
+                mPotoMusic.setImageBitmap(bitmap);
                 potoMusic2.setImageBitmap(bitmap);
-                timeFinish.setText(myService.getDuration());
-                if (myService.isPlaying()) {
-                    play.setImageResource(R.drawable.ic_pause_circle_filled_black_50dp);
+                mTimeFinish.setText(mMediaPlaybackService.getDuration());
+                if (mMediaPlaybackService.isPlaying()) {
+                    mPlay.setImageResource(R.drawable.ic_pause_circle_filled_black_50dp);
 
                 } else {
-                    play.setImageResource(R.drawable.ic_play_circle_filled_black_50dp);
+                    mPlay.setImageResource(R.drawable.ic_play_circle_filled_black_50dp);
                 }
-                if (myService.isShuffleSong()) {
-                    shuffle.setBackgroundResource(R.drawable.ic_shuffle_yellow_24dp);
+                if (mMediaPlaybackService.isShuffleSong()) {
+                    mShuffle.setBackgroundResource(R.drawable.ic_shuffle_yellow_24dp);
                 } else
-                   shuffle.setBackgroundResource(R.drawable.ic_shuffle_black_50dp);
+                   mShuffle.setBackgroundResource(R.drawable.ic_shuffle_black_50dp);
 
-                if (myService.getLoopSong() == 0) {
-                    repeat.setBackgroundResource(R.drawable.ic_repeat_white_24dp);
+                if (mMediaPlaybackService.getLoopSong() == 0) {
+                    mRepeat.setBackgroundResource(R.drawable.ic_repeat_white_24dp);
                 } else {
-                    if (myService.getLoopSong() == -1) {
-                        repeat.setBackgroundResource(R.drawable.ic_repeat_yellow_24dp);
+                    if (mMediaPlaybackService.getLoopSong() == -1) {
+                        mRepeat.setBackgroundResource(R.drawable.ic_repeat_yellow_24dp);
                     } else
-                        repeat.setBackgroundResource(R.drawable.ic_repeat_one_yellow_24dp);
+                        mRepeat.setBackgroundResource(R.drawable.ic_repeat_one_yellow_24dp);
                 }
             }
         }
@@ -238,13 +235,13 @@ public class MediaPlaybackFragment extends Fragment {
             @Override
             public void run() {
                 SimpleDateFormat formatTime = new SimpleDateFormat("mm:ss");
-                timeCurrent.setText(formatTime.format(myService.getCurrentTime()));
-                seekBar.setProgress(myService.getCurrentTime());
-                myService.getmMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                mTimeCurrent.setText(formatTime.format(mMediaPlaybackService.getCurrentTime()));
+                mSeekbar.setProgress(mMediaPlaybackService.getCurrentTime());
+                mMediaPlaybackService.getmMediaPlayer().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
                     public void onCompletion(MediaPlayer mediaPlayer) {
                         try {
-                            myService.onCompletionSong();
+                            mMediaPlaybackService.onCompletionSong();
                             updateUI();
                         } catch (IOException e) {
                             e.printStackTrace();
@@ -256,8 +253,8 @@ public class MediaPlaybackFragment extends Fragment {
         }, 100);
     }
 
-    public void setMyService(MediaPlaybackService service) {
-        this.myService = service;
+    public void setmMediaPlaybackService(MediaPlaybackService service) {
+        this.mMediaPlaybackService = service;
         updateUI();
     }
 

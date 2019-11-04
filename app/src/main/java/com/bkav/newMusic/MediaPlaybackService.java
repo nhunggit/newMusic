@@ -44,7 +44,7 @@ public class MediaPlaybackService extends Service{
     private boolean mShuffleSong =false;
     private int mMinIndex;
     private int mLoopSong =0;
-    private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
+    private final String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     private SharedPreferences mSharePreferences;
     private int mStateMedia = 0;
     private static final int STATE_PAUSE = 1;
@@ -186,9 +186,6 @@ public class MediaPlaybackService extends Service{
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
             stopForeground(STOP_FOREGROUND_DETACH);
         }
-        mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = mSharePreferences.edit();
-        editor.putBoolean("isPlaying",false);
 
     }
     public int getDurationSong(){

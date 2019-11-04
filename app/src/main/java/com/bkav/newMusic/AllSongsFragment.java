@@ -22,7 +22,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AllSongsFragment extends BaseListSongFrament implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
+    private final String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     private SharedPreferences mSharePreferences;
     private static final int LOADER_ID = 1;
     @Nullable

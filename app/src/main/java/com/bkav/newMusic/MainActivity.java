@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
             mMediaPlaybackService.setICallbackFromService(getICallback());
             Log.d("BKAV DucLQ", " Bkav DucLQ bind service myService "+ mMediaPlaybackService);
             iConnectActivityAndBaseSong.connectActivityAndBaseSong();
-            ((MediaPlaybackFragment)mMediaPlayBackFragment).setMyService(mMediaPlaybackService);
+            ((MediaPlaybackFragment)mMediaPlayBackFragment).setmMediaPlaybackService(mMediaPlaybackService);
             mBound=true;
         }
         @Override

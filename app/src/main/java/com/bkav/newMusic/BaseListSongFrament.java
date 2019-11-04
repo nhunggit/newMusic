@@ -33,7 +33,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
        private ImageView mDisk;
        protected SongAdapter mSongAdapter;
        private RecyclerView mRecycleView;
-       private String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
+       private final String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
        private SharedPreferences mSharePreferences;
        private int mPosition =0;
        private String mURL = "content://com.bkav.provider";
@@ -71,7 +71,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
             mConstraitLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mMediaPlaybackFragment.setMyService(mMediaPlaybackService);
+                    mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
                     Log.d("srv", "onClick: "+ mMediaPlaybackService);
                     getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragment1, mMediaPlaybackFragment).commit();
                 }
@@ -79,7 +79,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
             mConstraitLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   mMediaPlaybackFragment.setMyService(mMediaPlaybackService);
+                   mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
                     getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragment2, mMediaPlaybackFragment).commit();
                 }
             });
@@ -118,7 +118,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 mMediaPlaybackService =((MainActivity)getActivity()).mMediaPlaybackService;
                 Log.d("service", "connectActivityAndBaseSong: "+ mMediaPlaybackService);
                 mSongAdapter.setmMediaPlaybackService(mMediaPlaybackService);
-                mMediaPlaybackFragment.setMyService(mMediaPlaybackService);
+                mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
             }
         });
         if(mMediaPlaybackService !=null){
@@ -157,7 +157,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         if(mIspotraist ==true) {
             mConstraitLayout.setVisibility(View.VISIBLE);
         }else{
-            mMediaPlaybackFragment.setMyService(mMediaPlaybackService);
+            mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
             getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragment2, mMediaPlaybackFragment).commit();
         }
 
