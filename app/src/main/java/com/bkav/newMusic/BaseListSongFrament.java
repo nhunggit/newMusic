@@ -48,7 +48,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mSongAdapter = new SongAdapter(mListSong, getContext());
         View view = inflater.inflate(R.layout.list_baihat, container, false);
-        View View=inflater.inflate(R.layout.item_baihat,container,false);
         mRecycleView = view.findViewById(R.id.recyclerview);
         mNameSong =view.findViewById(R.id.namePlaySong);
         mbtPlay =view.findViewById(R.id.play);
@@ -67,15 +66,19 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         @SuppressLint("WrongConstant") LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         mRecycleView.setLayoutManager(linearLayoutManager);
 
-        if(mIspotraist ==true){
+        if(mIspotraist){
+            mConstraitLayout.setVisibility(View.VISIBLE);
             mConstraitLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mMediaPlaybackService.setListSong(mListSong);
+                    mMediaPlaybackService.setmMinIndex(mSharePreferences.getInt("position",0));
                     mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
                     Log.d("srv", "onClick: "+ mMediaPlaybackService);
                     getActivity().getSupportFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.fragment1, mMediaPlaybackFragment).commit();
                 }
             });}else{
+            mConstraitLayout.setVisibility(View.GONE);
             mConstraitLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -88,6 +91,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         mbtPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mMediaPlaybackService.setListSong(mListSong);
                 if(mMediaPlaybackService.isMusicPlay()) {
                     if (mMediaPlaybackService.isPlaying()) {
                         mMediaPlaybackService.pauseSong();
@@ -104,10 +108,6 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
             }
         });
-
-        if(mIspotraist ==false|| mMediaPlaybackService ==null){
-            mConstraitLayout.setVisibility(android.view.View.GONE);
-        }
         if(mMediaPlaybackService !=null){
             updateUI();
             mConstraitLayout.setVisibility(View.VISIBLE);
@@ -115,10 +115,12 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         ((MainActivity)getActivity()).setiConnectActivityAndBaseSong(new MainActivity.IConnectActivityAndBaseSong() {
             @Override
             public void connectActivityAndBaseSong() {
-                mMediaPlaybackService =((MainActivity)getActivity()).mMediaPlaybackService;
-                Log.d("service", "connectActivityAndBaseSong: "+ mMediaPlaybackService);
-                mSongAdapter.setmMediaPlaybackService(mMediaPlaybackService);
-                mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
+                if(((MainActivity) getActivity()).mMediaPlaybackService!=null) {
+                    mMediaPlaybackService = ((MainActivity) getActivity()).mMediaPlaybackService;
+                    Log.d("service", "connectActivityAndBaseSong: " + mMediaPlaybackService);
+                    mSongAdapter.setmMediaPlaybackService(mMediaPlaybackService);
+                   mMediaPlaybackFragment.setmMediaPlaybackService(mMediaPlaybackService);
+                }
             }
         });
         if(mMediaPlaybackService !=null){

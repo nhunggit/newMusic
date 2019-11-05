@@ -30,12 +30,13 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     protected MediaPlaybackService mMediaPlaybackService;
     private boolean mBound=false;
     private AllSongsFragment mAllSongFragment;
-    private Fragment mMediaPlayBackFragment;
+    private MediaPlaybackFragment mMediaPlayBackFragment;
     private  boolean mStatus=false;
     private Fragment mFavoriteSongsFragment;
     private DrawerLayout mDrawerLayout;
     private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
     boolean ispotraist = true;
+    MediaPlaybackService mediaPlaybackService;
 
     public void setiConnectActivityAndBaseSong(IConnectActivityAndBaseSong iConnectActivityAndBaseSong) {
         this.iConnectActivityAndBaseSong = iConnectActivityAndBaseSong;
@@ -45,11 +46,11 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             MediaPlaybackService.LocalBinder binder=(MediaPlaybackService.LocalBinder) service;
-            mMediaPlaybackService =binder.getService();
-            mMediaPlaybackService.setICallbackFromService(getICallback());
+           mMediaPlaybackService =binder.getService();
             Log.d("BKAV DucLQ", " Bkav DucLQ bind service myService "+ mMediaPlaybackService);
             iConnectActivityAndBaseSong.connectActivityAndBaseSong();
-            ((MediaPlaybackFragment)mMediaPlayBackFragment).setmMediaPlaybackService(mMediaPlaybackService);
+             mMediaPlaybackService.setICallbackFromService(getICallback());
+            (mMediaPlayBackFragment).setmMediaPlaybackService(mMediaPlaybackService);
             mBound=true;
         }
         @Override
@@ -62,6 +63,9 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     public ICallbackFromService getICallback(){
         return this;
     }
+
+
+
 
 @Override
 public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -129,17 +133,36 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Log.d("okko", "onCreate: ogd"+ispotraist);
         if(!ispotraist) {
-            if(mStatus){
-                mFavoriteSongsFragment = new FavoriteSongFament( mMediaPlaybackService.getListsong(), mMediaPlaybackService);
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mFavoriteSongsFragment).commit();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
-            }else {
+          //  if(mMediaPlayBackFragment!=null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
-            }
+//            }else
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
+          //  }
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
         }
+    }
+
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        if(mediaPlaybackService!=null) {
+//            mediaPlaybackService.setICallbackFromService(getICallback());
+//        }
+//    }
+//
+//    @Override
+//    protected void onPause() {
+//        super.onPause();
+//        mediaPlaybackService=mMediaPlaybackService;
+//    }
+
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+       // mMediaPlayBackFragment.updateUI();
     }
 
     @Override
@@ -177,7 +200,7 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
        if(mAllSongFragment != null){
            mAllSongFragment.updateUI();
        }
-        ((MediaPlaybackFragment)mMediaPlayBackFragment).updateUI();
+       mMediaPlayBackFragment.updateUI();
     }
 
     interface IConnectActivityAndBaseSong {

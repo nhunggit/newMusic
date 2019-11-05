@@ -48,21 +48,21 @@ public class MediaPlaybackFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.baihat, container, false);
-        mListMusic =(ImageView) view.findViewById(R.id.listMusic);
-        mSeekbar = (SeekBar) view.findViewById(R.id.seekbar);
-        potoMusic2 = (ImageView) view.findViewById(R.id.imgBackGround);
-        mNameSong = (TextView) view.findViewById(R.id.namesong);
-        mNameArtist = (TextView) view.findViewById(R.id.nameArtist);
-        mTimeCurrent = (TextView) view.findViewById(R.id.starttime);
-        mTimeFinish = (TextView) view.findViewById(R.id.finishTime);
-        mPotoMusic = (ImageView) view.findViewById(R.id.disk);
-        mLike = (ImageView) view.findViewById(R.id.like);
-        mDiskLike = (ImageView) view.findViewById(R.id.dislike);
-        mPlay = (ImageView) view.findViewById(R.id.Play);
-        mNext = (ImageView) view.findViewById(R.id.next);
-        mRepeat = (ImageView) view.findViewById(R.id.repeat);
-        mShuffle = (ImageView) view.findViewById(R.id.shuffle);
-        mPrevious = (ImageView) view.findViewById(R.id.previous);
+        mListMusic =view.findViewById(R.id.listMusic);
+        mSeekbar = view.findViewById(R.id.seekbar);
+        potoMusic2 = view.findViewById(R.id.imgBackGround);
+        mNameSong =  view.findViewById(R.id.namesong);
+        mNameArtist =view.findViewById(R.id.nameArtist);
+        mTimeCurrent =  view.findViewById(R.id.starttime);
+        mTimeFinish =  view.findViewById(R.id.finishTime);
+        mPotoMusic = view.findViewById(R.id.disk);
+        mLike =  view.findViewById(R.id.like);
+        mDiskLike =view.findViewById(R.id.dislike);
+        mPlay =  view.findViewById(R.id.Play);
+        mNext =  view.findViewById(R.id.next);
+        mRepeat = view.findViewById(R.id.repeat);
+        mShuffle =  view.findViewById(R.id.shuffle);
+        mPrevious = view.findViewById(R.id.previous);
 
         mListMusic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,7 +73,7 @@ public class MediaPlaybackFragment extends Fragment {
 
         if (mMediaPlaybackService != null) {
             mSeekbar.setMax(mMediaPlaybackService.getDurationSong());
-                updateUI();
+             updateUI();
         }
         mShuffle.setOnClickListener(new View.OnClickListener() {
 

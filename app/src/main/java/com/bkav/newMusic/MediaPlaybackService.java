@@ -61,7 +61,7 @@ public class MediaPlaybackService extends Service{
         mSharePreferences=getSharedPreferences(SHARED_PREFERENCES_NAME,MODE_PRIVATE);
         mNameSong=mSharePreferences.getString("namesong","NameSong");
         mArtistt=mSharePreferences.getString("artist","NameArtist");
-        mFile=mSharePreferences.getString("file","");
+        mPotoMusic=mSharePreferences.getString("file","");
         mMinIndex=mSharePreferences.getInt("position",0);
         mMediaPlayer = new MediaPlayer();
     }
@@ -186,6 +186,9 @@ public class MediaPlaybackService extends Service{
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
             stopForeground(STOP_FOREGROUND_DETACH);
         }
+        if(mICallbackFromService != null){
+            mICallbackFromService.updateUI();
+        }
 
     }
     public int getDurationSong(){
@@ -299,8 +302,7 @@ public class MediaPlaybackService extends Service{
             }
        // }
         Log.d("okok", "playSong: "+mMinIndex);
-
-        showNotification(mNameSong, mArtistt, mPotoMusic);
+            showNotification(mNameSong, mArtistt, mPotoMusic);
         mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = mSharePreferences.edit();
         editor.putString("namesong",getNameSong());
