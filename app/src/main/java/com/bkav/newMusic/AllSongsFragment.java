@@ -25,7 +25,6 @@ public class AllSongsFragment extends BaseListSongFrament implements LoaderManag
     private final String SHARED_PREFERENCES_NAME = "com.bkav.mymusic";
     private SharedPreferences mSharePreferences;
     private static final int LOADER_ID = 1;
-    MediaPlaybackFragment mMediaPlaybackFragment=new MediaPlaybackFragment();
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

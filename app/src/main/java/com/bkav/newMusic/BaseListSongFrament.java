@@ -105,6 +105,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 }
                 updateUI();
                 mMediaPlaybackService.setmMinIndex(mSharePreferences.getInt("position",0));
+              //  mMediaPlaybackService.showNotification(mListSong.get(mPosition).getTitle(),mListSong.get(mPosition).getArtist(),mListSong.get(mPosition).getFile());
 
             }
         });

@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     private DrawerLayout mDrawerLayout;
     private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
     boolean ispotraist = true;
-    MediaPlaybackService mediaPlaybackService;
 
     public void setiConnectActivityAndBaseSong(IConnectActivityAndBaseSong iConnectActivityAndBaseSong) {
         this.iConnectActivityAndBaseSong = iConnectActivityAndBaseSong;
@@ -144,19 +143,6 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         }
     }
 
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        if(mediaPlaybackService!=null) {
-//            mediaPlaybackService.setICallbackFromService(getICallback());
-//        }
-//    }
-//
-//    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        mediaPlaybackService=mMediaPlaybackService;
-//    }
 
 
     @Override
