@@ -235,7 +235,6 @@ public class MediaPlaybackService extends Service{
         builder.setCustomContentView(mSmallNotification);
         builder.setCustomBigContentView(mNotification);
         builder.setContentIntent(pendingIntent);
-        builder.setAutoCancel(false);
 
         mNotification.setTextViewText(R.id.title_ntf,nameSong);
         mNotification.setTextViewText(R.id.artist_ntf,nameArtist);
@@ -269,22 +268,12 @@ public class MediaPlaybackService extends Service{
             );
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             NotificationManager manager=getSystemService(NotificationManager.class);
-           manager.createNotificationChannel(notificationChannel);
+             manager.createNotificationChannel(notificationChannel);
         }
     }
 
 
     public void playSong(Song song) throws IOException {
-//        mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-//            @Override
-//            public void onCompletion(MediaPlayer mp) {
-//                try {
-//                    onCompletionSong();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
             if (getmStateMedia() == 1) {
                 mMediaPlayer.start();
             } else {
