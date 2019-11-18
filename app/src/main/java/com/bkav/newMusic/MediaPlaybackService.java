@@ -120,7 +120,7 @@ public class MediaPlaybackService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e("it", "onStartCommand: "+intent.getAction());
-        if(isMusicPlay()){
+        if(isMusicPlay()&& intent.getAction()!=null){
             switch (intent.getAction()){
                 case ACTION_PERVIOUS:
                     try {
@@ -189,6 +189,10 @@ public class MediaPlaybackService extends Service{
         if(mICallbackFromService != null){
             mICallbackFromService.updateUI();
         }
+        mSharePreferences = getApplicationContext().getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharePreferences.edit();
+        editor.putBoolean("isPlaying",false);
+        editor.commit();
 
     }
     public int getDurationSong(){
@@ -269,6 +273,7 @@ public class MediaPlaybackService extends Service{
             notificationChannel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
             NotificationManager manager=getSystemService(NotificationManager.class);
              manager.createNotificationChannel(notificationChannel);
+
         }
     }
 

@@ -4,6 +4,9 @@ import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -60,7 +63,14 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         mPosition =mSharePreferences.getInt("position",0);
         mNameSong.setText(mSharePreferences.getString("namesong","NameSong"));
         mArtist.setText(mSharePreferences.getString("artist","NameArtist"));
-        final String file=mSharePreferences.getString("file","");
+        String file=mSharePreferences.getString("file","");
+        Boolean isPlaying=mSharePreferences.getBoolean("isPlaying",false);
+        Log.d("isPlaying", "onCreateView: "+isPlaying);
+        if(isPlaying==true)
+            mbtPlay.setImageResource(R.drawable.ic_pause);
+        else
+            mbtPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
+        mDisk.setImageBitmap(getAlbumn(file));
         mRecycleView.setAdapter(mSongAdapter);
 
         @SuppressLint("WrongConstant") LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -129,6 +139,12 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
         }
         return view;
     }
+    public Bitmap getAlbumn(String path){
+        MediaMetadataRetriever metadataRetriever=new MediaMetadataRetriever();
+        metadataRetriever.setDataSource(path);
+        byte[] data=metadataRetriever.getEmbeddedPicture();
+        return data==null?null: BitmapFactory.decodeByteArray(data,0,data.length);
+    }
 
     public void setSong(ArrayList<Song> songs){
         this.mListSong =songs;
@@ -192,7 +208,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
             }
 
-
+          //  mMediaPlaybackService.showNotification(mListSong.get(mPosition).getTitle(),mListSong.get(mPosition).getArtist(),mListSong.get(mPosition).getFile());
             updateUI();
         } catch (IOException e) {
             e.printStackTrace();

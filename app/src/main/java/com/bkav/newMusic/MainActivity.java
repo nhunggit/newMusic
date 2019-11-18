@@ -129,15 +129,12 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         mMediaPlayBackFragment = new MediaPlaybackFragment();
         mFavoriteSongsFragment = new FavoriteSongFament();
         Intent intent=new Intent(this, MediaPlaybackService.class);
+        startService(intent);
         bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
         Log.d("okko", "onCreate: ogd"+ispotraist);
         if(!ispotraist) {
-          //  if(mMediaPlayBackFragment!=null) {
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment2, mMediaPlayBackFragment).commit();
-//            }else
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
-          //  }
         } else {
             getSupportFragmentManager().beginTransaction().replace(R.id.fragment1, mAllSongFragment).commit();
         }
