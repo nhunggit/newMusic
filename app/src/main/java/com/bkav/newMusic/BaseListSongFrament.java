@@ -70,7 +70,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
             mbtPlay.setImageResource(R.drawable.ic_pause);
         else
             mbtPlay.setImageResource(R.drawable.ic_play_arrow_black_24dp);
-        mDisk.setImageBitmap(getAlbumn(file));
+       //mDisk.setImageBitmap(getAlbumn(file));
         mRecycleView.setAdapter(mSongAdapter);
 
         @SuppressLint("WrongConstant") LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
@@ -115,7 +115,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                 }
                 updateUI();
                 mMediaPlaybackService.setmMinIndex(mSharePreferences.getInt("position",0));
-              //  mMediaPlaybackService.showNotification(mListSong.get(mPosition).getTitle(),mListSong.get(mPosition).getArtist(),mListSong.get(mPosition).getFile());
+             //   mMediaPlaybackService.showNotification(mListSong.get(mPosition).getTitle(),mListSong.get(mPosition).getArtist(),mListSong.get(mPosition).getFile());
 
             }
         });
@@ -170,6 +170,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
     @Override
     public void ClickItem(int position) {
+
         mMediaPlaybackService.setmStateMedia(0);
         mMediaPlaybackService.setListSong(mListSong);
         mMediaPlaybackService.setmMinIndex(position);
@@ -185,6 +186,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
                    mMediaPlaybackService.getmMediaPlayer().pause();
                     mMediaPlaybackService.playSong(mListSong.get(position));
                 }else
+                    Log.d("click", "ClickItem: "+"nhung");
                     mMediaPlaybackService.playSong(mListSong.get(position));
             String selection = " id_provider =" + mListSong.get(position).getId();
             Cursor c = getActivity().managedQuery(mURISong, null, selection, null, null);
@@ -208,7 +210,7 @@ public class BaseListSongFrament extends Fragment implements SongAdapter.OnClick
 
             }
 
-          //  mMediaPlaybackService.showNotification(mListSong.get(mPosition).getTitle(),mListSong.get(mPosition).getArtist(),mListSong.get(mPosition).getFile());
+            mMediaPlaybackService.showNotification(mListSong.get(mPosition).getTitle(),mListSong.get(mPosition).getArtist(),mListSong.get(mPosition).getFile());
             updateUI();
         } catch (IOException e) {
             e.printStackTrace();

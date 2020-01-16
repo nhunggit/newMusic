@@ -24,6 +24,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class MainActivity extends AppCompatActivity  implements NavigationView.OnNavigationItemSelectedListener, ICallbackFromService{
 
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity  implements NavigationView.O
     private DrawerLayout mDrawerLayout;
     private IConnectActivityAndBaseSong iConnectActivityAndBaseSong;
     boolean ispotraist = true;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public void setiConnectActivityAndBaseSong(IConnectActivityAndBaseSong iConnectActivityAndBaseSong) {
         this.iConnectActivityAndBaseSong = iConnectActivityAndBaseSong;
@@ -114,6 +116,13 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
         setContentView(R.layout.activity_main);
         initPermission();
 
+         mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+        Bundle bundle = new Bundle();
+        bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "1");
+        bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "ok");
+        bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+        mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -142,11 +151,6 @@ public void onRequestPermissionsResult(int requestCode, @NonNull String[] permis
 
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-       // mMediaPlayBackFragment.updateUI();
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
